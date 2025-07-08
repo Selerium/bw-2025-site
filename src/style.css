@@ -3,6 +3,8 @@
 @theme {
   --color-primary: #B69B72;
   --color-secondary: #8C343A;
+  --color-tertiary: #5F4539;
+  --color-background-layer: #00000099;
 }
 
 html {
@@ -10,7 +12,7 @@ html {
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "League Spartan", system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
