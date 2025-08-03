@@ -36,6 +36,7 @@ const graduating = ref<boolean>();
 const launchConf = ref<boolean>();
 const eyuCap = ref<boolean>();
 const bw25LimitedShirt = ref<boolean>();
+const bw25LimitedShirtSize = ref<string>();
 const onlinePayment = ref<boolean>();
 
 const errorText = ref();
@@ -303,14 +304,11 @@ async function handleSubmit() {
   console.log(bw25LimitedShirt.value);
   console.log(onlinePayment.value);
 
-  if (fullName.value == undefined)
-    errorText.value = "Please enter full name";
-  else if (gender.value == undefined)
-    errorText.value = "Please choose gender";
+  if (fullName.value == undefined) errorText.value = "Please enter full name";
+  else if (gender.value == undefined) errorText.value = "Please choose gender";
   else if (dateOfBirth.value == undefined)
     errorText.value = "Please enter date of birth";
-  else if (age.value == undefined)
-    errorText.value = "Please enter age";
+  else if (age.value == undefined) errorText.value = "Please enter age";
   else if (nationality.value == undefined)
     errorText.value = "Please enter nationality";
   else if (idNumber.value == undefined)
@@ -351,16 +349,47 @@ async function handleSubmit() {
     errorText.value = "Please mention your interest in Launch Conference 2025";
   else if (onlinePayment.value == undefined)
     errorText.value = "Please pick a payment method";
-  else
-    errorText.value = "";
+  else errorText.value = "";
 
-  const res = await fetch("https://afqmzmqsvbxdyxuqhwfv.supabase.co/functions/v1/register-user", {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ name: 'hiii', email: 'ohhh'})
-  })
+  const res = await fetch(
+    "https://afqmzmqsvbxdyxuqhwfv.supabase.co/functions/v1/register-user",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        full_name: fullName.value,
+        gender: gender.value,
+        date_of_birth: dateOfBirth.value,
+        age: age.value,
+        nationality: nationality.value,
+        id_number: idNumber.value,
+        email: emailAddress.value,
+        phone_number: phoneNumber.value,
+        emergency_name: emergencyName.value,
+        emergency_number: emergencyNumber.value,
+        role: role.value,
+        church_name: churchName.value,
+        church_code: churchCode.value,
+        youth_leader: leaderName.value,
+        youth_number: leaderNumber.value,
+        shirt_size: size.value,
+        swimming: swimming.value,
+        allergies: allergies.value,
+        allergies_info: allergiesInfo.value,
+        medication: medication.value,
+        medication_info: medicationInfo.value,
+        graduating: graduating.value,
+        launch_conf: launchConf.value,
+        eyu_cap: eyuCap.value,
+        "bw-25-shirt": bw25LimitedShirt.value,
+        "bw-25-shirt-size": bw25LimitedShirtSize.value,
+        online_payment: onlinePayment.value,
+        acknowledgement: true,
+      }),
+    }
+  );
   const data = await res.json();
   console.log(data);
 }
@@ -736,7 +765,15 @@ async function handleSubmit() {
         :use-image="true"
         :title="'Big Weekend 2025 Limited Edition Shirt'"
       />
-      <p class="w-full text-left font-semibold text-xl">Payment Method <span v-if="onlinePayment == undefined" class="font-semibold text-red-900 text-lg">Required</span></p>
+      <DropdownInput :disabled="bw25LimitedShirt != true" :options="['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']" :placeholder="'Choose size'" :title="'Big Weekend 2025 Limited Edition Shirt Size'" />
+      <p class="w-full text-left font-semibold text-xl">
+        Payment Method
+        <span
+          v-if="onlinePayment == undefined"
+          class="font-semibold text-red-900 text-lg"
+          >Required</span
+        >
+      </p>
       <div class="flex gap-2">
         <input
           name="paymentOptions"
@@ -762,8 +799,9 @@ async function handleSubmit() {
       <p class="w-full text-left">
         By submitting this form, I confirm that all information provided is
         accurate to the best of my knowledge. I understand that participation in
-        Big Weekend 2025 is contingent on submitting required documentation and
-        completing the full payment.
+        Big Weekend 2025 is contingent on submitting required documentation, on
+        completing the full payment, and the information submitted here being
+        correct and valid.
       </p>
       <button
         type="submit"
