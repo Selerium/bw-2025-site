@@ -12,8 +12,7 @@ import Toaster from "./Toaster.vue";
 const today = new Date();
 const registrationDay = new Date(2025, 7, 8);
 const timeLeft = registrationDay.valueOf() - today.valueOf();
-// const registrationOpen = timeLeft > 0 ? false : true;
-const registrationOpen = true;
+const registrationOpen = timeLeft > 0 ? false : true;
 const activeImage = ref<number>(1);
 
 // form fields
@@ -48,8 +47,8 @@ const onlinePayment = ref<boolean>();
 const errorText = ref();
 const toasterError = ref<boolean>(false);
 const toasterVisible = ref<boolean>(false);
-const toasterTitle = ref<string>('Title');
-const toasterDescription = ref<string>('Description');
+const toasterTitle = ref<string>("Title");
+const toasterDescription = ref<string>("Description");
 const disableRegister = ref<boolean>(false);
 
 const countryList = [
@@ -252,12 +251,7 @@ const countryList = [
   "Zimbabwe",
 ];
 
-const images = [
-  "hero-image.png",
-  "hero-image.png",
-  "hero-image.png",
-  "hero-image.png",
-];
+const images = ["/bw-1.jpg", "/bw-2.jpg", "/bw-3.jpg", "/hero-image.png"];
 
 const metrics = [
   {
@@ -282,28 +276,28 @@ const speakersInfo = [
   {
     name: "ARNO ALAJOKI",
     title: "National Director @ UAE YFC/EYU",
-    image: "",
+    image: "/arno-alajoki.png",
     description:
       "From the Nordic country of Finland, Arno has been living in the UAE since 2022. He holds a BA in Applied Theology and MTh in Systematic Theology. He is passionate about equipping and empowering the young generation to live out the purpose God has intended for them.",
   },
   {
     name: "FRANK MEYER",
     title: "Youth Pastor @ Fellowship Dubai",
-    image: "",
+    image: "/frank-meyer.png",
     description:
       "Frank's been the go-to guru for teens in the UAE since 2011, masterfully guiding them through the wild ride of becoming young adults! He’s all about sparking those dreams while sprinkling in some good ol' Gospel inspiration. Talk about a motivational leader!",
   },
   {
     name: "ELIZABETH SHAHADA",
     title: "Young Adults Pastor @ Fellowship Dubai",
-    image: "",
+    image: "/elizabeth-shahada.png",
     description:
       "Meet Elizabeth, an Aussie-Egyptian with a degree in international business and corporate experience. Now focused on uplifting youth, she uses her event-planning skills to inspire young adults to live purposefully. In her free time, she enjoys table tennis, basketball, clean comedy, and puzzles!",
   },
   {
     name: "SAJEEL JOHN",
     title: "Pastor",
-    image: "",
+    image: "/sajeel-john.png",
     description:
       "Sajeel has been serving in ministry for the last 9 years. From Pakistan, he's had the privilege to help in church planting in Africa and Pakistan, and currently leads a church in Dubai. He has served in youth ministry and works with adults throughout his ministry.",
   },
@@ -367,15 +361,16 @@ async function handleSubmit() {
   else if (graduating.value && launchConf.value == undefined)
     errorText.value = "Please mention your interest in Launch Conference 2025";
   else if (bw25LimitedShirt.value && bw25LimitedShirtSize.value == undefined)
-    errorText.value = "Please pick your Big Weekend 2025 Limited Edition Shirt Size"
+    errorText.value =
+      "Please pick your Big Weekend 2025 Limited Edition Shirt Size";
   else if (onlinePayment.value == undefined)
     errorText.value = "Please pick a payment method";
   else errorText.value = "";
 
-  if (errorText.value != '') {
-    enableToaster(true, 'Could not register', errorText.value)
+  if (errorText.value != "") {
+    enableToaster(true, "Could not register", errorText.value);
     disableRegister.value = false;
-    return ;
+    return;
   }
 
   const res = await fetch(
@@ -421,13 +416,13 @@ async function handleSubmit() {
   const data = await res.json();
   console.log(data);
 
-  enableToaster(data['error'], data['title'], data['message'])
+  enableToaster(data["error"], data["title"], data["message"]);
   disableRegister.value = false;
 }
 
 function enableToaster(error: boolean, title: string, description: string) {
   toasterVisible.value = true;
-  
+
   toasterError.value = error;
   toasterTitle.value = title;
   toasterDescription.value = description;
@@ -440,7 +435,13 @@ function enableToaster(error: boolean, title: string, description: string) {
 
 <template>
   <Nav class="fixed z-50 w-11/12" />
-  <Toaster class="fixed z-50 bottom-8 right-8" :visible="toasterVisible" :error="toasterError" :title="toasterTitle" :description="toasterDescription" />
+  <Toaster
+    class="fixed z-50 bottom-8 right-8"
+    :visible="toasterVisible"
+    :error="toasterError"
+    :title="toasterTitle"
+    :description="toasterDescription"
+  />
   <div
     id="home"
     class="flex flex-col h-dvh w-full justify-center items-center relative gap-10"
@@ -477,31 +478,39 @@ function enableToaster(error: boolean, title: string, description: string) {
         <h1 class="text-5xl font-bold text-primary w-full text-left">
           WHAT IS BIG WEEKEND?
         </h1>
-        <p class="text-md text-justify w-full leading-12">
+        <p class="text-md text-justify w-full">
           Big Weekend is an event for 12-18 year old students. It consists of 2
           nights and three days of worship, fun & games, small group
           discussions, and four teaching sessions designed to support spiritual
           growth for teenagers in the Gulf region. It is an opportunity to meet
           other young people from our region and make new friends. Participants
-          represent different cultural and church backgrounds.
+          that attend come from a large variety of different cultural and church
+          backgrounds, making it an amazing and beautiful experience for every
+          exploring and discovering faith through fresh perspectives.
+          </p>
+          <p class="text-md text-justify w-full">
+          Big Weekend is all about inspiring the youth to set their faith in Jesus
+          while having exhilarating games, awesome activities, uplifting
+          worship, and gospel inspired teachings — all wrapped up in their small
+          groups. Get ready for a weekend of fun and faith!
         </p>
       </div>
       <div
         class="relative flex flex-col justify-center items-center w-full lg:w-1/3 grow rounded-lg"
       >
         <img
-          class="object-cover w-full h-full rounded-lg"
+          class="object-cover aspect-video w-full h-full rounded-lg"
           :src="images[activeImage]"
         />
         <button @click="changeActiveImage(true)">
           <img
-            class="rotate-90 cursor-pointer absolute z-10 bottom-5/12 -left-4 mix-blend-difference"
+            class="rotate-90 cursor-pointer absolute h-6 z-10 bottom-5/12 -left-4"
             src="/arrow.png"
           />
         </button>
         <button @click="changeActiveImage(false)">
           <img
-            class="-rotate-90 cursor-pointer absolute z-10 bottom-5/12 -right-4 mix-blend-difference"
+            class="-rotate-90 cursor-pointer absolute h-6 z-10 bottom-5/12 -right-4"
             src="/arrow.png"
           />
         </button>
@@ -581,11 +590,11 @@ function enableToaster(error: boolean, title: string, description: string) {
       >
         <img
           :src="speaker.image"
-          class="not-sm:w-full not-sm:aspect-video w-1/2 border object-cover object-center rounded-lg bg-black"
+          class="not-sm:w-full aspect-video w-1/2 border-2 border-secondary object-cover object-center rounded-lg bg-black"
         />
         <div class="not-sm:w-full w-1/2 flex flex-col gap-2 items-start">
           <h2 class="text-2xl font-bold text-secondary">{{ speaker.name }}</h2>
-          <h3 class="text-md font-bold text-tertiary">
+          <h3 class="text-md text-left font-bold text-tertiary">
             {{ speaker.title }}
           </h3>
           <p class="text-md text-justify">
@@ -838,32 +847,42 @@ function enableToaster(error: boolean, title: string, description: string) {
     </form>
 
     <div v-else="!registrationOpen">
-      <vue-countdown :time="timeLeft" v-slot="{ days, hours, minutes, seconds }">
+      <vue-countdown
+        :time="timeLeft"
+        v-slot="{ days, hours, minutes, seconds }"
+      >
         <div class="flex gap-1">
-          
           <div class="flex flex-col gap-2">
-            <p class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold">
+            <p
+              class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold"
+            >
               {{ days }}
             </p>
-            <p>DAYS</p>
+            <p class="">DAYS</p>
           </div>
           <div class="flex flex-col gap-2">
-            <p class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold">
+            <p
+              class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold"
+            >
               {{ hours }}
             </p>
-            <p>HOURS</p>
+            <p class="">HOURS</p>
           </div>
           <div class="flex flex-col gap-2">
-            <p class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold">
+            <p
+              class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold"
+            >
               {{ minutes }}
             </p>
-            <p>MINUTES</p>
+            <p class="">MINS</p>
           </div>
           <div class="flex flex-col gap-2">
-            <p class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold">
+            <p
+              class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold"
+            >
               {{ seconds }}
             </p>
-            <p>SECONDS</p>
+            <p class="">SECS</p>
           </div>
         </div>
       </vue-countdown>
@@ -876,17 +895,23 @@ function enableToaster(error: boolean, title: string, description: string) {
     >
       <img src="/bw-25-logo.png" class="aspect-auto h-10" />
       <div class="flex flex-col gap-2">
-        <a class="text-md text-left" href="#about">about</a>
-        <a class="text-md text-left" href="#theme">theme</a>
-        <a class="text-md text-left" href="#speakers">speakers</a>
+        <a class="text-md text-center lg:text-left" href="#about">about</a>
+        <a class="text-md text-center lg:text-left" href="#theme">theme</a>
+        <a class="text-md text-center lg:text-left" href="#speakers"
+          >speakers</a
+        >
       </div>
       <div class="flex flex-col gap-2">
-        <a class="text-md text-left" href="#sign-up">sign up</a>
+        <a class="text-md text-center lg:text-left" href="#sign-up">sign up</a>
       </div>
       <div class="flex gap-10">
-        <a href="/"><img class="h-6 w-6" src="/mail.png" /></a>
-        <a href="/"><img class="h-6 w-6 ml-1.5" src="/whatsapp.png" /></a>
-        <a href="/"><img class="h-6 w-6" src="/instagram.png" /></a>
+        <a href="mailto:hello@eyu.ae"
+          ><img class="h-6 w-6" src="/mail.png"
+        /></a>
+        <!-- <a href="/"><img class="h-6 w-6 ml-1.5" src="/whatsapp.png" /></a> -->
+        <a href="https://instagram.com/eyunlimited"
+          ><img class="h-6 w-6" src="/instagram.png"
+        /></a>
       </div>
     </div>
   </div>

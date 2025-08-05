@@ -35,14 +35,14 @@ onscroll = () => {
             <a href="#signup" class="transition-all" @click="changeSection(4)" :class="chosenSection == 4 ? 'font-bold text-primary' : 'font-normal text-white'">sign up</a>
         </div>
         <div class="hidden lg:flex gap-10 items-center">
-            <a href="mailto:adi@eyu.ae"><img class="h-6 w-6" src="/mail.png"/></a>
-            <a href="/"><img class="h-6 w-6 ml-1.5" src="/whatsapp.png"/></a>
+            <a href="mailto:hello@eyu.ae"><img class="h-6 w-6" src="/mail.png"/></a>
+            <!-- <a href="/"><img class="h-6 w-6 ml-1.5" src="/whatsapp.png"/></a> -->
             <a href="https://instagram.com/eyunlimited"><img class="h-6 w-6" src="/instagram.png"/></a>
         </div>
         <div @click="toggleMobileMenu()" class="h-full lg:hidden p-3 cursor-pointer">
             <img class="h-8 w-8" src="/menu-outline.svg"/>
         </div>
-        <div @click="toggleMobileMenu()" :class="showMobileMenu ? 'opacity-100' : 'opacity-0 pointer-events-none'" class="bg-black h-dvh w-dvw absolute -top-8 -left-10 flex flex-col justify-center items-center gap-10 transition-all">
+        <div @click="toggleMobileMenu()" :class="showMobileMenu ? 'opacity-100' : 'opacity-0 pointer-events-none'" class="bg-black h-dvh w-[110dvw] absolute -left-1/12 -top-8 flex flex-col justify-center items-center gap-10 transition-all">
             <a href="#" class="transition-all" @click="changeSection(0)">
                 <img src="/bw-25-logo.png" class="h-10 w-auto"/>
             </a>
@@ -51,8 +51,8 @@ onscroll = () => {
             <a href="#speakers" class="transition-all" @click="changeSection(3)" :class="chosenSection == 3 ? 'font-bold text-primary' : 'font-normal text-white'">speakers</a>
             <a href="#signup" class="transition-all" @click="changeSection(4)" :class="chosenSection == 4 ? 'font-bold text-primary' : 'font-normal text-white'">sign up</a>
             <div class="flex gap-8">
-                <a href="mailto:adi@eyu.ae"><img class="h-6 w-6" src="/mail.png"/></a>
-                <a href="/"><img class="h-6 w-6 ml-1" src="/whatsapp.png"/></a>
+                <a href="mailto:hello@eyu.ae"><img class="h-6 w-6" src="/mail.png"/></a>
+                <!-- <a href="/"><img class="h-6 w-6 ml-1" src="/whatsapp.png"/></a> -->
                 <a href="https://instagram.com/eyunlimited"><img class="h-6 w-6" src="/instagram.png"/></a>
             </div>
         </div>
