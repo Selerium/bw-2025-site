@@ -6,8 +6,12 @@ import DropdownInput from "./form/DropdownInput.vue";
 import DateInput from "./form/DateInput.vue";
 import CheckboxInput from "./form/CheckboxInput.vue";
 import NumberInput from "./form/NumberInput.vue";
+import VueCountdown from "@chenfengyuan/vue-countdown";
 
-// const registrationOpen = false;
+const registrationOpen = import.meta.env.REGISTRATION_ACTIVE;
+const today = new Date();
+const registrationDay = new Date(2025, 7, 8);
+const time = registrationDay.valueOf() - today.valueOf();
 const activeImage = ref<number>(1);
 
 // form fields
@@ -267,6 +271,37 @@ const metrics = [
   },
 ];
 
+const speakersInfo = [
+  {
+    name: "ARNO ALAJOKI",
+    title: "National Director @ UAE YFC/EYU",
+    image: "",
+    description:
+      "From the Nordic country of Finland, Arno has been living in the UAE since 2022. He holds a BA in Applied Theology and MTh in Systematic Theology. He is passionate about equipping and empowering the young generation to live out the purpose God has intended for them.",
+  },
+  {
+    name: "FRANK MEYER",
+    title: "Youth Pastor @ Fellowship Dubai",
+    image: "",
+    description:
+      "Frank's been the go-to guru for teens in the UAE since 2011, masterfully guiding them through the wild ride of becoming young adults! He’s all about sparking those dreams while sprinkling in some good ol' Gospel inspiration. Talk about a motivational leader!",
+  },
+  {
+    name: "ELIZABETH SHAHADA",
+    title: "Young Adults Pastor @ Fellowship Dubai",
+    image: "",
+    description:
+      "Meet Elizabeth, an Aussie-Egyptian with a degree in international business and corporate experience. Now focused on uplifting youth, she uses her event-planning skills to inspire young adults to live purposefully. In her free time, she enjoys table tennis, basketball, clean comedy, and puzzles!",
+  },
+  {
+    name: "SAJEEL JOHN",
+    title: "Pastor",
+    image: "",
+    description:
+      "Sajeel has been serving in ministry for the last 9 years. From Pakistan, he's had the privilege to help in church planting in Africa and Pakistan, and currently leads a church in Dubai. He has served in youth ministry and works with adults throughout his ministry.",
+  },
+];
+
 function changeActiveImage(left: boolean) {
   if (left)
     activeImage.value =
@@ -277,33 +312,6 @@ function changeActiveImage(left: boolean) {
 }
 
 async function handleSubmit() {
-  console.log(fullName.value);
-  console.log(gender.value);
-  console.log(dateOfBirth.value);
-  console.log(age.value);
-  console.log(nationality.value);
-  console.log(idNumber.value);
-  console.log(emailAddress.value);
-  console.log(phoneNumber.value);
-  console.log(emergencyName.value);
-  console.log(emergencyNumber.value);
-  console.log(role.value);
-  console.log(churchName.value);
-  console.log(churchCode.value);
-  console.log(leaderName.value);
-  console.log(leaderNumber.value);
-  console.log(size.value);
-  console.log(swimming.value);
-  console.log(allergies.value);
-  console.log(allergiesInfo.value);
-  console.log(medication.value);
-  console.log(medicationInfo.value);
-  console.log(graduating.value);
-  console.log(launchConf.value);
-  console.log(eyuCap.value);
-  console.log(bw25LimitedShirt.value);
-  console.log(onlinePayment.value);
-
   if (fullName.value == undefined) errorText.value = "Please enter full name";
   else if (gender.value == undefined) errorText.value = "Please choose gender";
   else if (dateOfBirth.value == undefined)
@@ -359,35 +367,35 @@ async function handleSubmit() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "full_name": fullName.value,
-        "gender": gender.value,
-        "date_of_birth": dateOfBirth.value,
-        "age": age.value,
-        "role": role.value,
-        "nationality": nationality.value,
-        "id_number": idNumber.value,
-        "email": emailAddress.value,
-        "phone_number": phoneNumber.value,
-        "emergency_name": emergencyName.value,
-        "emergency_number": emergencyNumber.value,
-        "church_name": churchName.value,
-        "church_code": churchCode.value,
-        "youth_leader": leaderName.value,
-        "youth_number": leaderNumber.value,
-        "shirt_size": size.value,
-        "graduating": graduating.value,
-        "launch_conf": launchConf.value,
-        "swimming": swimming.value,
-        "allergies": allergies.value,
-        "allergies_info": allergiesInfo.value,
-        "medication": medication.value,
-        "medication_info": medicationInfo.value,
+        full_name: fullName.value,
+        gender: gender.value,
+        date_of_birth: dateOfBirth.value,
+        age: age.value,
+        role: role.value,
+        nationality: nationality.value,
+        id_number: idNumber.value,
+        email: emailAddress.value,
+        phone_number: phoneNumber.value,
+        emergency_name: emergencyName.value,
+        emergency_number: emergencyNumber.value,
+        church_name: churchName.value,
+        church_code: churchCode.value,
+        youth_leader: leaderName.value,
+        youth_number: leaderNumber.value,
+        shirt_size: size.value,
+        graduating: graduating.value,
+        launch_conf: launchConf.value,
+        swimming: swimming.value,
+        allergies: allergies.value,
+        allergies_info: allergiesInfo.value,
+        medication: medication.value,
+        medication_info: medicationInfo.value,
         "bw-25-shirt": bw25LimitedShirt.value,
         "bw-25-shirt-size": bw25LimitedShirtSize.value,
-        "eyu_cap": eyuCap.value,
-        "online_payment": onlinePayment.value,
-        "acknowledgement": true,
-        "paid": false,
+        eyu_cap: eyuCap.value,
+        online_payment: onlinePayment.value,
+        acknowledgement: true,
+        paid: false,
       }),
     }
   );
@@ -397,7 +405,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <Nav class="fixed z-10 w-11/12" />
+  <Nav class="fixed z-50 w-11/12" />
   <div
     id="home"
     class="flex flex-col h-dvh w-full justify-center items-center relative gap-10"
@@ -407,7 +415,7 @@ async function handleSubmit() {
       src="/hero-image.png"
     />
     <div class="flex flex-col gap-4">
-      <h1 class="z-10 text-white font-bold text-5xl">BIG WEEKEND 2025</h1>
+      <h1 class="px-8 z-10 text-white font-bold text-5xl">BIG WEEKEND 2025</h1>
       <p class="z-10 text-white text-lg">October 17-19, 2025</p>
     </div>
     <a
@@ -416,17 +424,21 @@ async function handleSubmit() {
     >
       APPLY NOW
     </a>
-    <a href="#about" class="absolute z-10 bottom-16"
-      ><img src="/arrow.png" class="h-6 w-auto hover:scale-105 transition-all"
+    <a href="#about" class="absolute z-10 bottom-16 w-10"
+      ><img
+        src="/arrow.png"
+        class="h-auto w-full hover:scale-105 transition-all"
     /></a>
   </div>
 
   <div
     id="about"
-    class="flex flex-col h-dvh w-full justify-center items-center gap-10"
+    class="flex flex-col h-fit lg:h-dvh w-full justify-center items-center gap-10 lg:py-0 py-8"
   >
-    <div class="flex justify-between w-11/12 max-h-1/3 gap-10 grow">
-      <div class="flex flex-col gap-8 w-1/3 grow">
+    <div
+      class="flex lg:flex-row flex-col justify-between w-11/12 h-fit max-h-1/2 gap-10"
+    >
+      <div class="flex flex-col gap-8 w-full lg:w-1/3 grow">
         <h1 class="text-5xl font-bold text-primary w-full text-left">
           WHAT IS BIG WEEKEND?
         </h1>
@@ -440,7 +452,7 @@ async function handleSubmit() {
         </p>
       </div>
       <div
-        class="relative flex flex-col justify-center items-center w-1/3 grow rounded-lg"
+        class="relative flex flex-col justify-center items-center w-full lg:w-1/3 grow rounded-lg"
       >
         <img
           class="object-cover w-full h-full rounded-lg"
@@ -460,10 +472,10 @@ async function handleSubmit() {
         </button>
       </div>
     </div>
-    <div class="flex gap-10 w-11/12 max-h-1/5 grow">
+    <div class="flex flex-wrap gap-10 w-11/12 h-fit">
       <div
         v-for="item in metrics"
-        class="w-1/5 h-full rounded-lg p-4 grow bg-secondary flex flex-col justify-center items-center gap-4"
+        class="min-w-28 w-1/5 h-50 box-border rounded-lg p-4 grow bg-secondary flex flex-col justify-center items-center gap-4"
       >
         <span class="text-white font-bold text-5xl">{{ item.value }}</span>
         <div class="h-1/3 w-full flex items-center justify-center">
@@ -475,10 +487,17 @@ async function handleSubmit() {
 
   <div
     id="theme"
-    class="flex flex-col h-dvh w-full justify-center items-center gap-10"
+    class="flex flex-col h-fit lg:h-dvh w-full justify-center items-center gap-10 lg:py-0 py-8"
   >
-    <img src="/theme-logo.png" class="min-w-72 h-auto max-w-2/5" />
-    <p class="text-center w-3/5">
+    <img
+      src="/theme-logo.png"
+      class="min-w-72 h-auto max-w-2/5 hidden lg:block"
+    />
+    <div class="lg:hidden flex flex-col justify-center items-center">
+      <img src="/theme-logo-2.png" class="min-w-72 h-auto max-w-2/5" />
+      <img src="/theme-logo-1.png" class="min-w-72 h-auto max-w-2/5" />
+    </div>
+    <p class="text-center lg:w-3/5 w-11/12">
       How do you know what is real? Sometimes knowing the difference between
       what is real and what is fake is difficult unless you are familiar with
       the real thing. Looking at a designer bag and a well made copy of it can
@@ -491,93 +510,51 @@ async function handleSubmit() {
       Meeting the real thing changed his life forever. This year at Big Weekend
       we will dive into Philippians chapter 3 to see what it is to be 4REAL.
     </p>
-    <div class="flex justify-between w-11/12">
-      <img class="h-full w-auto" src="/verse-of-the-theme.png" />
+    <div
+      class="flex flex-row not-lg:flex-wrap lg:gap-8 items-center justify-between w-11/12"
+    >
+      <img
+        class="m-auto max-w-1/2 not-lg:grow not-lg:min-w-50 lg:w-1/4 order-2 lg:order-1"
+        src="/verse-of-the-theme.png"
+      />
       <iframe
-        class="aspect-video rounded-lg"
+        class="aspect-video grow w-full lg:max-w-1/2 min-w-1/3 rounded-lg order-1 lg:order-2"
         src="https://www.youtube.com/embed/MkhsM8vQ1PA?si=P-CydsPiygdHj9-G&amp;controls=0"
         title="Welcome to Big Weekend 2025"
         frameborder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope;"
         referrerpolicy="strict-origin-when-cross-origin"
       ></iframe>
-      <img class="h-full w-auto" src="/4real-logos.png" />
+      <img
+        class="m-auto max-w-1/2 not-lg:grow not-lg:min-w-50 lg:w-1/4 order-3 lg:order-3"
+        src="/4real-logos.png"
+      />
     </div>
   </div>
 
   <div
     id="speakers"
-    class="flex flex-col h-dvh w-full justify-center items-center gap-10"
+    class="flex flex-col h-fit lg:h-dvh w-full justify-center items-center gap-10"
   >
     <h1 class="text-5xl font-bold text-primary w-full text-center">
       MEET THE SPEAKERS
     </h1>
     <div class="flex flex-wrap justify-center items-center w-11/12">
-      <div class="max-w-1/2 h-64 grow flex gap-4 p-4">
+      <div
+        v-for="speaker in speakersInfo"
+        class="w-full lg:max-w-1/2 min-h-64 grow flex not-sm:flex-col gap-4 p-4"
+      >
         <img
-          class="w-1/2 border object-cover object-center rounded-lg bg-black"
+          :src="speaker.image"
+          class="not-sm:w-full not-sm:aspect-video w-1/2 border object-cover object-center rounded-lg bg-black"
         />
-        <div class="w-1/2 flex flex-col gap-2 items-start">
-          <h2 class="text-2xl font-bold text-secondary">ARNO ALAJOKI</h2>
+        <div class="not-sm:w-full w-1/2 flex flex-col gap-2 items-start">
+          <h2 class="text-2xl font-bold text-secondary">{{ speaker.name }}</h2>
           <h3 class="text-md font-bold text-tertiary">
-            National Director @ UAE YFC/EYU
+            {{ speaker.title }}
           </h3>
           <p class="text-md text-justify">
-            From the Nordic country of Finland, Arno has been living in the UAE
-            since 2022. He holds a BA in Applied Theology and MTh in Systematic
-            Theology. He is passionate about equipping and empowering the young
-            generation to live out the purpose God has intended for them.
-          </p>
-        </div>
-      </div>
-      <div class="max-w-1/2 h-64 grow flex gap-4 p-4">
-        <img
-          class="w-1/2 border object-cover object-center rounded-lg bg-black"
-        />
-        <div class="w-1/2 flex flex-col gap-2 items-start">
-          <h2 class="text-2xl font-bold text-secondary">FRANK MEYER</h2>
-          <h3 class="text-md font-bold text-tertiary">
-            Youth Pastor @ Fellowship Dubai
-          </h3>
-          <p class="text-md text-justify">
-            Frank's been the go-to guru for teens in the UAE since 2011,
-            masterfully guiding them through the wild ride of becoming young
-            adults! He’s all about sparking those dreams while sprinkling in
-            some good ol' Gospel inspiration. Talk about a motivational leader!
-          </p>
-        </div>
-      </div>
-      <div class="max-w-1/2 h-64 grow flex gap-4 p-4">
-        <img
-          class="w-1/2 border object-cover object-center rounded-lg bg-black"
-        />
-        <div class="w-1/2 flex flex-col gap-2 items-start">
-          <h2 class="text-2xl font-bold text-secondary">ELIZABETH SHAHADA</h2>
-          <h3 class="text-md font-bold text-tertiary">
-            Young Adults Pastor @ Fellowship Dubai
-          </h3>
-          <p class="text-md text-justify">
-            Meet Elizabeth, an Aussie-Egyptian with a degree in international
-            business and corporate experience. Now focused on uplifting youth,
-            she uses her event-planning skills to inspire young adults to live
-            purposefully. In her free time, she enjoys table tennis, basketball,
-            clean comedy, and puzzles!
-          </p>
-        </div>
-      </div>
-      <div class="max-w-1/2 h-64 grow flex gap-4 p-4">
-        <img
-          class="w-1/2 border object-cover object-center rounded-lg bg-black"
-        />
-        <div class="w-1/2 flex flex-col gap-2 items-start">
-          <h2 class="text-2xl font-bold text-secondary">SAJEEL JOHN</h2>
-          <h3 class="text-md font-bold text-tertiary">Pastor</h3>
-          <p class="text-md text-justify">
-            Sajeel has been serving in ministry for the last 9 years. From
-            Pakistan, he's had the privilege to help in church planting in
-            Africa and Pakistan, and currently leads a church in Dubai. He has
-            served in youth ministry and works with adults throughout his
-            ministry.
+            {{ speaker.description }}
           </p>
         </div>
       </div>
@@ -592,10 +569,14 @@ async function handleSubmit() {
       <h1 class="text-5xl font-bold text-primary w-full text-center">
         SIGN UP
       </h1>
-      <p>Registration opens August 1 2025</p>
+      <p>Registration opens August 8 2025</p>
     </div>
 
-    <form @submit.prevent="" class="flex flex-wrap gap-4 w-1/2 min-w-72">
+    <form
+      v-if="registrationOpen"
+      @submit.prevent=""
+      class="flex flex-wrap gap-4 w-1/2 min-w-72"
+    >
       <p class="w-full text-left font-semibold text-xl">Personal Information</p>
       <TextInput
         v-model="fullName"
@@ -766,7 +747,12 @@ async function handleSubmit() {
         :use-image="true"
         :title="'Big Weekend 2025 Limited Edition Shirt'"
       />
-      <DropdownInput :disabled="bw25LimitedShirt != true" :options="['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']" :placeholder="'Choose size'" :title="'Big Weekend 2025 Limited Edition Shirt Size'" />
+      <DropdownInput
+        :disabled="bw25LimitedShirt != true"
+        :options="['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']"
+        :placeholder="'Choose size'"
+        :title="'Big Weekend 2025 Limited Edition Shirt Size'"
+      />
       <p class="w-full text-left font-semibold text-xl">
         Payment Method
         <span
@@ -813,11 +799,19 @@ async function handleSubmit() {
       </button>
       <p class="font-semibold text-center text-red-900 pt-2">{{ errorText }}</p>
     </form>
+
+    <div v-else="!registrationOpen">
+      <vue-countdown :time="time" v-slot="{ days, hours, minutes, seconds }">
+        <span class="text-3xl">
+          {{ days }} days | {{ hours }} hours | {{ minutes }} minutes | {{ seconds }} seconds
+        </span        >
+      </vue-countdown>
+    </div>
   </div>
 
   <div id="footer" class="flex justify-center items-center w-full h-fit">
     <div
-      class="text-white bg-background-layer flex justify-between items-start w-11/12 p-8 rounded-lg mb-8"
+      class="text-white bg-background-layer flex flex-col lg:flex-row lg:gap-0 gap-8 justify-between items-center lg:items-start w-11/12 p-8 rounded-lg mb-8"
     >
       <img src="/bw-25-logo.png" class="aspect-auto h-10" />
       <div class="flex flex-col gap-2">
@@ -826,8 +820,7 @@ async function handleSubmit() {
         <a class="text-md text-left" href="#speakers">speakers</a>
       </div>
       <div class="flex flex-col gap-2">
-        <a class="text-md text-left" href="#about">student sign up</a>
-        <a class="text-md text-left" href="#about">leader sign up</a>
+        <a class="text-md text-left" href="#sign-up">sign up</a>
       </div>
       <div class="flex gap-10">
         <a href="/"><img class="h-6 w-6" src="/mail.png" /></a>
