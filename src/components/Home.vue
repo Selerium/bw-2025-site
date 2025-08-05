@@ -7,11 +7,13 @@ import DateInput from "./form/DateInput.vue";
 import CheckboxInput from "./form/CheckboxInput.vue";
 import NumberInput from "./form/NumberInput.vue";
 import VueCountdown from "@chenfengyuan/vue-countdown";
+import Toaster from "./Toaster.vue";
 
-const registrationOpen = import.meta.env.REGISTRATION_ACTIVE;
 const today = new Date();
 const registrationDay = new Date(2025, 7, 8);
-const time = registrationDay.valueOf() - today.valueOf();
+const timeLeft = registrationDay.valueOf() - today.valueOf();
+// const registrationOpen = timeLeft > 0 ? false : true;
+const registrationOpen = true;
 const activeImage = ref<number>(1);
 
 // form fields
@@ -44,6 +46,11 @@ const bw25LimitedShirtSize = ref<string>();
 const onlinePayment = ref<boolean>();
 
 const errorText = ref();
+const toasterError = ref<boolean>(false);
+const toasterVisible = ref<boolean>(false);
+const toasterTitle = ref<string>('Title');
+const toasterDescription = ref<string>('Description');
+const disableRegister = ref<boolean>(false);
 
 const countryList = [
   "Afghanistan",
@@ -312,6 +319,10 @@ function changeActiveImage(left: boolean) {
 }
 
 async function handleSubmit() {
+  console.log(bw25LimitedShirt.value);
+  console.log(bw25LimitedShirtSize.value);
+
+  disableRegister.value = true;
   if (fullName.value == undefined) errorText.value = "Please enter full name";
   else if (gender.value == undefined) errorText.value = "Please choose gender";
   else if (dateOfBirth.value == undefined)
@@ -345,19 +356,27 @@ async function handleSubmit() {
     errorText.value = "Please choose your swimming proficiency";
   else if (allergies.value == undefined)
     errorText.value = "Please mention if you have allergies";
-  else if (allergiesInfo.value == undefined)
+  else if (allergies.value && allergiesInfo.value == undefined)
     errorText.value = "Please mention your allergy information";
   else if (medication.value == undefined)
     errorText.value = "Please mention if you have medication";
-  else if (medicationInfo.value == undefined)
+  else if (medication.value && medicationInfo.value == undefined)
     errorText.value = "Please mention your medication information";
   else if (graduating.value == undefined)
     errorText.value = "Please mention if you are graduating";
-  else if (launchConf.value == undefined)
+  else if (graduating.value && launchConf.value == undefined)
     errorText.value = "Please mention your interest in Launch Conference 2025";
+  else if (bw25LimitedShirt.value && bw25LimitedShirtSize.value == undefined)
+    errorText.value = "Please pick your Big Weekend 2025 Limited Edition Shirt Size"
   else if (onlinePayment.value == undefined)
     errorText.value = "Please pick a payment method";
   else errorText.value = "";
+
+  if (errorText.value != '') {
+    enableToaster(true, 'Could not register', errorText.value)
+    disableRegister.value = false;
+    return ;
+  }
 
   const res = await fetch(
     "https://afqmzmqsvbxdyxuqhwfv.supabase.co/functions/v1/register-user",
@@ -401,11 +420,27 @@ async function handleSubmit() {
   );
   const data = await res.json();
   console.log(data);
+
+  enableToaster(data['error'], data['title'], data['message'])
+  disableRegister.value = false;
+}
+
+function enableToaster(error: boolean, title: string, description: string) {
+  toasterVisible.value = true;
+  
+  toasterError.value = error;
+  toasterTitle.value = title;
+  toasterDescription.value = description;
+
+  setTimeout(() => {
+    toasterVisible.value = false;
+  }, 5000);
 }
 </script>
 
 <template>
   <Nav class="fixed z-50 w-11/12" />
+  <Toaster class="fixed z-50 bottom-8 right-8" :visible="toasterVisible" :error="toasterError" :title="toasterTitle" :description="toasterDescription" />
   <div
     id="home"
     class="flex flex-col h-dvh w-full justify-center items-center relative gap-10"
@@ -472,7 +507,7 @@ async function handleSubmit() {
         </button>
       </div>
     </div>
-    <div class="flex flex-wrap gap-10 w-11/12 h-fit">
+    <div class="flex flex-wrap gap-4 w-11/12 h-fit">
       <div
         v-for="item in metrics"
         class="min-w-28 w-1/5 h-50 box-border rounded-lg p-4 grow bg-secondary flex flex-col justify-center items-center gap-4"
@@ -563,7 +598,7 @@ async function handleSubmit() {
 
   <div
     id="signup"
-    class="flex flex-col h-fit w-full justify-center items-center gap-15 py-30"
+    class="flex flex-col h-fit min-h-[50dvh] w-full justify-center items-center gap-15 py-30"
   >
     <div class="flex flex-col gap-2">
       <h1 class="text-5xl font-bold text-primary w-full text-center">
@@ -748,6 +783,7 @@ async function handleSubmit() {
         :title="'Big Weekend 2025 Limited Edition Shirt'"
       />
       <DropdownInput
+        v-model="bw25LimitedShirtSize"
         :disabled="bw25LimitedShirt != true"
         :options="['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']"
         :placeholder="'Choose size'"
@@ -793,7 +829,8 @@ async function handleSubmit() {
       <button
         type="submit"
         @click="handleSubmit"
-        class="cursor-pointer bg-secondary text-white rounded-lg pt-2 pb-1 px-4 font-semibold"
+        :disabled="disableRegister"
+        class="disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed cursor-pointer bg-secondary text-white rounded-lg pt-2 pb-1 px-4 font-semibold"
       >
         Register
       </button>
@@ -801,10 +838,34 @@ async function handleSubmit() {
     </form>
 
     <div v-else="!registrationOpen">
-      <vue-countdown :time="time" v-slot="{ days, hours, minutes, seconds }">
-        <span class="text-3xl">
-          {{ days }} days | {{ hours }} hours | {{ minutes }} minutes | {{ seconds }} seconds
-        </span        >
+      <vue-countdown :time="timeLeft" v-slot="{ days, hours, minutes, seconds }">
+        <div class="flex gap-1">
+          
+          <div class="flex flex-col gap-2">
+            <p class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold">
+              {{ days }}
+            </p>
+            <p>DAYS</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <p class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold">
+              {{ hours }}
+            </p>
+            <p>HOURS</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <p class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold">
+              {{ minutes }}
+            </p>
+            <p>MINUTES</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <p class="text-3xl w-16 text-center border rounded-lg pb-2 pt-4 bg-secondary text-white font-semibold">
+              {{ seconds }}
+            </p>
+            <p>SECONDS</p>
+          </div>
+        </div>
       </vue-countdown>
     </div>
   </div>
