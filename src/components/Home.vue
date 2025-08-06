@@ -469,7 +469,7 @@ function enableToaster(error: boolean, title: string, description: string) {
 
   <div
     id="about"
-    class="flex flex-col h-fit lg:h-dvh w-full justify-center items-center gap-10 lg:py-0 py-8"
+    class="flex flex-col h-fit lg:min-h-dvh w-full justify-center items-center gap-10 lg:py-0 py-8"
   >
     <div
       class="flex lg:flex-row flex-col justify-between w-11/12 h-fit max-h-1/2 gap-10"
@@ -559,7 +559,7 @@ function enableToaster(error: boolean, title: string, description: string) {
 
   <div
     id="theme"
-    class="flex flex-col h-fit lg:h-dvh w-full justify-center items-center gap-10 lg:py-0 py-8"
+    class="flex flex-col h-fit lg:min-h-dvh w-full justify-center items-center gap-10 lg:py-0 py-8"
   >
     <img
       src="/theme-logo.png"
@@ -606,7 +606,7 @@ function enableToaster(error: boolean, title: string, description: string) {
 
   <div
     id="speakers"
-    class="flex flex-col h-fit lg:h-dvh w-full justify-center items-center gap-10"
+    class="flex flex-col h-fit lg:min-h-dvh w-full justify-center items-center gap-10"
   >
     <h1 class="text-5xl font-bold text-primary w-full text-center">
       MEET THE SPEAKERS
