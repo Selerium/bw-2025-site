@@ -15,7 +15,7 @@ onMounted(() => {
 
 <template>
   <div class="w-full flex flex-col justify-start items-center relative">
-    <Home />
+    <router-view />
   </div>
 </template>
 
