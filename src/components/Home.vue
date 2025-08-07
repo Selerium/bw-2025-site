@@ -10,7 +10,7 @@ import VueCountdown from "@chenfengyuan/vue-countdown";
 import Toaster from "./Toaster.vue";
 
 const today = new Date();
-const registrationDay = new Date('2025-08-07T22:00:00Z')
+const registrationDay = new Date('2025-08-07T20:00:00Z')
 const timeLeft = registrationDay.valueOf() - today.valueOf();
 const registrationOpen = timeLeft > 0 ? false : true;
 const activeImage = ref<number>(0);
@@ -28,7 +28,7 @@ const emergencyName = ref<string>();
 const emergencyNumber = ref<string>();
 const role = ref<string>();
 const churchName = ref<string>();
-const churchCode = ref<string>();
+// const churchCode = ref<string>();
 const leaderName = ref<string>();
 const leaderNumber = ref<string>();
 const size = ref<string>();
@@ -313,9 +313,6 @@ function changeActiveImage(left: boolean) {
 }
 
 async function handleSubmit() {
-  console.log(bw25LimitedShirt.value);
-  console.log(bw25LimitedShirtSize.value);
-
   disableRegister.value = true;
   if (fullName.value == undefined) errorText.value = "Please enter full name";
   else if (gender.value == undefined) errorText.value = "Please choose gender";
@@ -338,8 +335,8 @@ async function handleSubmit() {
     errorText.value = "Please choose your role at BW2025";
   else if (churchName.value == undefined)
     errorText.value = "Please enter your church name";
-  else if (churchCode.value == undefined)
-    errorText.value = "Please enter your church code";
+  // else if (churchCode.value == undefined)
+  //   errorText.value = "Please enter your church code";
   else if (leaderName.value == undefined)
     errorText.value = "Please enter your leader's name";
   else if (leaderNumber.value == undefined)
@@ -393,7 +390,7 @@ async function handleSubmit() {
         emergency_name: emergencyName.value,
         emergency_number: emergencyNumber.value,
         church_name: churchName.value,
-        church_code: churchCode.value,
+        // church_code: churchCode.value,
         youth_leader: leaderName.value,
         youth_number: leaderNumber.value,
         shirt_size: size.value,
@@ -414,7 +411,6 @@ async function handleSubmit() {
     }
   );
   const data = await res.json();
-  console.log(data);
 
   enableToaster(data["error"], data["title"], data["message"]);
   disableRegister.value = false;
@@ -747,30 +743,31 @@ function enableToaster(error: boolean, title: string, description: string) {
       />
       <div class="h-[1px] w-full rounded-lg bg-gray-300 my-2"></div>
       <p class="w-full text-left font-semibold text-xl">Church Information</p>
+      <!-- <NumberInput
+      v-model="churchCode"
+      :title="'Church Code'"
+      :placeholder="'e.g.: 1234'"
+      :error="churchCode == undefined"
+      /> -->
+      <TextInput
+      v-model="leaderName"
+      :title="'Youth Group Leader Name'"
+      :placeholder="'Enter leader\'s name'"
+      :error="leaderName == undefined"
+      />
+      <TextInput
+      v-model="leaderNumber"
+      :title="'Youth Group Leader Contact'"
+      :placeholder="'Enter leader\'s number'"
+      :error="leaderNumber == undefined"
+      />
       <TextInput
         v-model="churchName"
         :title="'Church Name'"
         :placeholder="'Enter church name'"
         :error="churchName == undefined"
       />
-      <NumberInput
-        v-model="churchCode"
-        :title="'Church Code'"
-        :placeholder="'e.g.: 1234'"
-        :error="churchCode == undefined"
-      />
-      <TextInput
-        v-model="leaderName"
-        :title="'Youth Group Leader Name'"
-        :placeholder="'Enter leader\'s name'"
-        :error="leaderName == undefined"
-      />
-      <TextInput
-        v-model="leaderNumber"
-        :title="'Youth Group Leader Contact'"
-        :placeholder="'Enter leader\'s number'"
-        :error="leaderNumber == undefined"
-      />
+      <div class="h-[1px] w-full rounded-lg bg-gray-300 my-2"></div>
       <p class="w-full text-left font-semibold text-xl">
         Additional Information
       </p>
