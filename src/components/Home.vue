@@ -693,7 +693,7 @@ function enableToaster(error: boolean, title: string, description: string) {
       />
       <NumberInput
         v-model="age"
-        :title="'Age (as of July 1, 2025)'"
+        :title="'Age (as of September 1, 2025)'"
         :placeholder="'Enter age'"
         :error="age == undefined"
       />
@@ -743,7 +743,7 @@ function enableToaster(error: boolean, title: string, description: string) {
       />
       <div class="rounded-lg border p-4 flex flex-col gap-2">
         <p class="font-semibold text-secondary">IMPORTANT NOTE REGARDING ROLES</p>
-        <p class="w-full text-left">The age categories are calculated based on your age as of <strong>July 1, 2025</strong>:</p>
+        <p class="w-full text-left">The age categories are calculated based on your age as of <strong>September 1, 2025</strong>:</p>
         <p class="w-full text-left">
           - Junior Students <strong>12-15 years</strong>
         </p>
