@@ -736,11 +736,27 @@ function enableToaster(error: boolean, title: string, description: string) {
       />
       <DropdownInput
         v-model="role"
-        :title="'What are you signing up as? (Leader/Junior 12-15/Senior 16+) (as of July 1, 2025)'"
+        :title="'What are you signing up as?'"
         :options="['Leader', 'Senior', 'Junior']"
         :placeholder="'Choose role'"
         :error="role == undefined"
       />
+      <div class="rounded-lg border p-4 flex flex-col gap-2">
+        <p class="font-semibold text-secondary">IMPORTANT NOTE REGARDING ROLES</p>
+        <p class="w-full text-left">The age categories are calculated based on your age as of <strong>July 1, 2025</strong>:</p>
+        <p class="w-full text-left">
+          - Junior Students <strong>12-15 years</strong>
+        </p>
+        <p class="w-full text-left">
+          - Senior Students <strong>16+ years</strong>
+        </p>
+        <p class="w-full text-left">
+          - Leaders <strong>depending on your church</strong>
+        </p>
+        <p class="w-full text-left">
+          Leaders are asked to <strong>confirm with your respective churches</strong> before signing up for Big Weekend. Please talk with your leadership team before signing up for your church.
+        </p>
+      </div>
       <div class="h-[1px] w-full rounded-lg bg-gray-300 my-2"></div>
       <p class="w-full text-left font-semibold text-xl">Church Information</p>
       <!-- <NumberInput
