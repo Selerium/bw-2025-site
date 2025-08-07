@@ -10,7 +10,7 @@ import VueCountdown from "@chenfengyuan/vue-countdown";
 import Toaster from "./Toaster.vue";
 
 const today = new Date();
-const registrationDay = new Date(2025, 7, 8);
+const registrationDay = new Date('2025-08-07T20:00:00Z')
 const timeLeft = registrationDay.valueOf() - today.valueOf();
 const registrationOpen = timeLeft > 0 ? false : true;
 const activeImage = ref<number>(0);
@@ -404,8 +404,8 @@ async function handleSubmit() {
         allergies_info: allergiesInfo.value,
         medication: medication.value,
         medication_info: medicationInfo.value,
-        "bw-25-shirt": bw25LimitedShirt.value,
-        "bw-25-shirt-size": bw25LimitedShirtSize.value,
+        bw_25_shirt: bw25LimitedShirt.value,
+        bw_25_shirt_size: bw25LimitedShirtSize.value,
         eyu_cap: eyuCap.value,
         online_payment: onlinePayment.value,
         acknowledgement: true,
@@ -418,6 +418,10 @@ async function handleSubmit() {
 
   enableToaster(data["error"], data["title"], data["message"]);
   disableRegister.value = false;
+
+  if (onlinePayment.value) {
+    window.location.href = data['data']['url'];
+  }
 }
 
 function enableToaster(error: boolean, title: string, description: string) {
@@ -741,6 +745,7 @@ function enableToaster(error: boolean, title: string, description: string) {
         :placeholder="'Choose role'"
         :error="role == undefined"
       />
+      <div class="h-[1px] w-full rounded-lg bg-gray-300 my-2"></div>
       <p class="w-full text-left font-semibold text-xl">Church Information</p>
       <TextInput
         v-model="churchName"
@@ -811,6 +816,7 @@ function enableToaster(error: boolean, title: string, description: string) {
         :error="medicationInfo == undefined"
         :disabled="medication == undefined || medication == false"
       />
+      <div class="h-[1px] w-full rounded-lg bg-gray-300 my-2"></div>
       <p class="w-full text-left font-semibold text-xl">Seniors Conference</p>
       <DropdownInput
         v-model="graduating"
@@ -827,6 +833,7 @@ function enableToaster(error: boolean, title: string, description: string) {
         :error="launchConf == undefined"
         :disabled="graduating == undefined || graduating == false"
       />
+      <div class="h-[1px] w-full rounded-lg bg-gray-300 my-2"></div>
       <p class="w-full text-left font-semibold text-xl">
         Merchandise Pre-Orders
       </p>
@@ -848,6 +855,7 @@ function enableToaster(error: boolean, title: string, description: string) {
         :placeholder="'Choose size'"
         :title="'Big Weekend 2025 Limited Edition Shirt Size'"
       />
+      <div class="h-[1px] w-full rounded-lg bg-gray-300 my-2"></div>
       <p class="w-full text-left font-semibold text-xl">
         Payment Method
         <span
@@ -856,6 +864,18 @@ function enableToaster(error: boolean, title: string, description: string) {
           >Required</span
         >
       </p>
+      <div class="rounded-lg border p-4 flex flex-col gap-2">
+        <p class="font-semibold text-secondary">IMPORTANT NOTE REGARDING PAYMENTS:</p>
+        <p class="w-full text-left">
+          - For students/leaders paying by themselves to book their seat, please click <strong>"Online Payment"</strong>.
+        </p>
+        <p class="w-full text-left">
+          - If your church is sponsoring your payment, please click the <strong>"Scholarship"</strong> option and we'll communicate with your church and leader to process and book your seat.
+        </p>
+        <p class="w-full text-left">
+          <strong>PLEASE NOTE:</strong> your seat is not confirmed until payment has been made. As there are limited seats, preference will be given on a first-come, first-serve basis.
+        </p>
+      </div>
       <div class="flex gap-2">
         <input
           name="paymentOptions"
@@ -878,6 +898,7 @@ function enableToaster(error: boolean, title: string, description: string) {
           >I am applying for a scholarship through my church</label
         >
       </div>
+      <div class="h-[1px] w-full rounded-lg bg-gray-300 my-2"></div>
       <p class="w-full text-left">
         By submitting this form, I confirm that all information provided is
         accurate to the best of my knowledge. I understand that participation in
