@@ -9,6 +9,9 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
+    imageSrc: {
+        type: String,
+    },
     error: {
         type: Boolean,
         default: false,
@@ -24,7 +27,7 @@ const modelValue = defineModel();
             <input v-model="modelValue" class="font-semibold rounded-lg text-left border" type="checkbox"></input>
             <label class="rounded-lg text-left">{{ props.title }}</label>
         </div>
-        <img v-if="props.useImage" class="rounded-lg border aspect-video w-full" />
+        <img v-if="props.useImage" class="rounded-lg border aspect-video w-full" :src="imageSrc"/>
     </div>
 </template>
 <style lang="scss" scoped></style>
