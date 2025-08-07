@@ -736,7 +736,7 @@ function enableToaster(error: boolean, title: string, description: string) {
       />
       <DropdownInput
         v-model="role"
-        :title="'What are you signing up as? (Leader/Student)'"
+        :title="'What are you signing up as? (Leader/Junior 12-15/Senior 16+) (as of July 1, 2025)'"
         :options="['Leader', 'Senior', 'Junior']"
         :placeholder="'Choose role'"
         :error="role == undefined"
