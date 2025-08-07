@@ -10,7 +10,7 @@ import VueCountdown from "@chenfengyuan/vue-countdown";
 import Toaster from "./Toaster.vue";
 
 const today = new Date();
-const registrationDay = new Date('2025-08-07T20:00:00Z')
+const registrationDay = new Date('2025-08-07T22:00:00Z')
 const timeLeft = registrationDay.valueOf() - today.valueOf();
 const registrationOpen = timeLeft > 0 ? false : true;
 const activeImage = ref<number>(0);
