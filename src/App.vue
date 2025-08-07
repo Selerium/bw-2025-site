@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import Home from './components/Home.vue';
 import { supabase } from './lib/supabaseClient';
 
 async function testSupabase() {
