@@ -10,10 +10,42 @@ const password = "coolisarno";
 const loggedIn = ref<boolean>(false);
 const inputUsername = ref<string>();
 const inputPassword = ref<string>();
-const rows = ref([{}]);
+const rows = ref([{
+    id: String,
+    created_at: String,
+    full_name: String,
+    gender: String,
+    date_of_birth: String,
+    age: String,
+    role: String,
+    nationality: String,
+    id_number: String,
+    email: String,
+    phone_number: String,
+    emergency_name: String,
+    emergency_number: String,
+    church_name: String,
+    church_code: String,
+    youth_leader: String,
+    youth_number: String,
+    shirt_size: String,
+    graduating: String,
+    launch_conf: String,
+    swimming: String,
+    allergies: String,
+    allergies_info: String,
+    medication: String,
+    medication_info: String,
+    eyu_cap: String,
+    bw_25_shirt: String,
+    bw_25_shirt_size: String,
+    online_payment: String,
+    acknowledgement: String,
+    paid: Boolean,
+}]);
 const showFilters = ref<boolean>(false);
 const searchText = ref<string>('');
-const chosenColumn = ref<string>('');
+const chosenColumn = ref('');
 
 const ID_column = ref<boolean>(false);
 const datetime_column = ref<boolean>(false);
@@ -57,7 +89,7 @@ const filteredRows = computed(() => {
     )
 
     return rows.value.filter(row =>
-        String(row[chosenColumn.value])
+        String(row[chosenColumn.value as keyof typeof row])
             .toLowerCase()
             .includes(searchText.value.toLowerCase())
     )
