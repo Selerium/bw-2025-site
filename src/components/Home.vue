@@ -887,6 +887,9 @@ function enableToaster(error: boolean, title: string, description: string) {
           - If your church is sponsoring your payment, please click the <strong>"Scholarship"</strong> option and we'll communicate with your church and leader to process and book your seat.
         </p>
         <p class="w-full text-left">
+          - If your payment is cancelled or has any issue, you will have to redo the form in order to create a new payment link and pay online (apologies for the inconvenience with that).
+        </p>
+        <p class="w-full text-left">
           <strong>PLEASE NOTE:</strong> your seat is not confirmed until payment has been made. As there are limited seats, preference will be given on a first-come, first-serve basis.
         </p>
       </div>
