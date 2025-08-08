@@ -855,11 +855,11 @@ function enableToaster(error: boolean, title: string, description: string) {
         merchandise prior to the event. Merchandise must be paid for during
         registration payment and can be collected at the event.
       </p>
-      <CheckboxInput v-model="eyuCap" :use-image="true" :title="'EYU Cap'" :image-src="'/eyu-cap.png'" />
+      <CheckboxInput v-model="eyuCap" :use-image="true" :title="'EYU Cap (50 AED)'" :image-src="'/eyu-cap.png'" />
       <CheckboxInput
         v-model="bw25LimitedShirt"
         :use-image="true"
-        :title="'Big Weekend 2025 Limited Edition Shirt'"
+        :title="'Big Weekend 2025 Limited Edition Shirt (120 AED)'"
         :image-src="'/bw-sweatshirt.png'"
       />
       <DropdownInput
