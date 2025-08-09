@@ -111,6 +111,7 @@ async function checkLogIn() {
       .order("created_at");
 
     if (data) rows.value = data;
+    if (error) console.log(error);
 
     const counts: Record<string, number> = {};
 
