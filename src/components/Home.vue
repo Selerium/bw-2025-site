@@ -289,10 +289,10 @@ const speakersInfo = [
   },
   {
     name: "ELIZABETH SHAHADA",
-    title: "Young Adults Pastor @ Fellowship Dubai",
+    title: "Young Adults Director @ Fellowship Dubai",
     image: "/elizabeth-shahada.png",
     description:
-      "Meet Elizabeth, an Aussie-Egyptian with a degree in international business and corporate experience. Now focused on uplifting youth, she uses her event-planning skills to inspire young adults to live purposefully. In her free time, she enjoys table tennis, basketball, clean comedy, and puzzles!",
+      "Elizabeth is an Australian-Egyptian. She studied international business and then worked in business before serving youth and young adults for a number of years. She is now serving young adults in Dubai. She organizes events and small groups that help young people live intentionally. She loves table tennis and basketball, watching clean comedy, and solving puzzles.",
   },
   {
     name: "SAJEEL JOHN",
