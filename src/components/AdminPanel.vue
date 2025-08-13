@@ -113,19 +113,35 @@ async function checkLogIn() {
     if (data) rows.value = data;
     if (error) console.log(error);
 
-    const counts: Record<string, number> = {};
+    const counts: Record<string, { signups: number; paidSignups: number, nonPaying: number }> = {};
 
     rows.value.forEach((row) => {
       if (row["church_name"]) {
-        counts[row["church_name"].toString()] =
-          (counts[row["church_name"].toString()] || 0) + 1;
+        if (counts[row["church_name"].toString()])
+          counts[row["church_name"].toString()] = {
+            signups: counts[row["church_name"].toString()]["signups"] + 1,
+            paidSignups:
+              counts[row["church_name"].toString()]["paidSignups"] +
+              (row["paid"] ? 1 : 0),
+            nonPaying:
+              counts[row["church_name"].toString()]["nonPaying"] +
+              (!row["online_payment"] ? 1 : 0),
+          };
+        else
+          counts[row["church_name"].toString()] = {
+            signups: 1,
+            paidSignups: row["paid"] ? 1 : 0,
+            nonPaying: row["online_payment"] ? 0 : 1
+          };
       }
     });
 
-    church_names.value = Object.entries(counts).map(([name, count]) => ({
+    church_names.value = Object.entries(counts).map(([name, info]) => ({
       name,
-      count,
+      info,
     }));
+
+    console.log(church_names.value);
   }
 }
 
@@ -180,24 +196,43 @@ function readableValue(text: any) {
         <h2 class="text-center md:text-left text-2xl font-semibold w-full">
           Student Breakup
         </h2>
-        <img src="/arrow.png" @click="() => showBreakup = !showBreakup" :class="showBreakup ? 'rotate-180' : ''" class="w-6 h-4 invert-100 cursor-pointer" />
+        <img
+          src="/arrow.png"
+          @click="() => (showBreakup = !showBreakup)"
+          :class="showBreakup ? 'rotate-180' : ''"
+          class="w-6 h-4 invert-100 cursor-pointer"
+        />
       </div>
       <div v-if="showBreakup" class="w-full flex flex-col rounded-lg">
         <div class="w-full flex">
-          <p class="p-2 w-1/2 bg-secondary text-white font-semibold border">
+          <p class="p-2 w-1/4 bg-secondary text-white font-semibold border">
             Church Name
           </p>
-          <p class="p-2 w-1/2 bg-secondary text-white font-semibold border">
+          <p class="p-2 w-1/4 bg-secondary text-white font-semibold border">
             Total Participants
+          </p>
+          <p class="p-2 w-1/4 bg-secondary text-white font-semibold border">
+            Paid Participants
+          </p>
+          <p class="p-2 w-1/4 bg-secondary text-white font-semibold border">
+            Non-Paying Participants
           </p>
         </div>
         <div v-for="church in church_names" class="w-full flex">
-          <p class="p-2 w-1/2 border">{{ church["name"] }}</p>
-          <p class="p-2 w-1/2 border">{{ church["count"] }}</p>
+          <p class="p-2 w-1/4 border">{{ church["name"] }}</p>
+          <p class="p-2 w-1/4 border">{{ church["info"]["signups"] }}</p>
+          <p class="p-2 w-1/4 border">{{ church["info"]["paidSignups"] }}</p>
+          <p class="p-2 w-1/4 border">{{ church["info"]["nonPaying"] }}</p>
         </div>
         <div class="w-full flex">
-          <p class="p-2 w-1/2 border font-semibold">Total</p>
-          <p class="p-2 w-1/2 border font-semibold">{{ rows.length }}</p>
+          <p class="p-2 w-1/4 border font-semibold">Total</p>
+          <p class="p-2 w-1/4 border font-semibold">{{ rows.length }}</p>
+          <p class="p-2 w-1/4 border font-semibold">
+            {{ rows.filter((row) => row["paid"]).length }}
+          </p>
+          <p class="p-2 w-1/4 border font-semibold">
+            {{ rows.filter((row) => !row["online_payment"]).length }}
+          </p>
         </div>
       </div>
     </div>
@@ -249,7 +284,12 @@ function readableValue(text: any) {
             type="text"
             placeholder="e.g.: Name, Leader, Church, etc..."
           />
-          <img src="/arrow.png" @click="() => showMasterList = !showMasterList" :class="showMasterList ? 'rotate-180' : ''" class="w-6 h-4 invert-100 cursor-pointer" />
+          <img
+            src="/arrow.png"
+            @click="() => (showMasterList = !showMasterList)"
+            :class="showMasterList ? 'rotate-180' : ''"
+            class="w-6 h-4 invert-100 cursor-pointer"
+          />
         </div>
       </div>
 
@@ -383,7 +423,10 @@ function readableValue(text: any) {
         </div>
       </div>
 
-      <div v-if=showMasterList class="border rounded-lg w-full overflow-y-scroll">
+      <div
+        v-if="showMasterList"
+        class="border rounded-lg w-full overflow-y-scroll"
+      >
         <table class="border-collapse">
           <thead>
             <tr>
