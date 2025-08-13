@@ -215,7 +215,7 @@ function readableValue(text: any) {
             Paid Participants
           </p>
           <p class="p-2 w-1/4 bg-secondary text-white font-semibold border">
-            Non-Paying Participants
+            Sponsorship Participants
           </p>
         </div>
         <div v-for="church in church_names" class="w-full flex">
