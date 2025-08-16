@@ -22,6 +22,7 @@ const dateOfBirth = ref<Date>();
 const age = ref<number>();
 const nationality = ref<string>();
 const idNumber = ref<string>();
+const parentEmailAddress = ref<string>();
 const emailAddress = ref<string>();
 const phoneNumber = ref<string>();
 const emergencyName = ref<string>();
@@ -31,6 +32,7 @@ const churchName = ref<string>();
 // const churchCode = ref<string>();
 const leaderName = ref<string>();
 const leaderNumber = ref<string>();
+const leaderEmail = ref<string>();
 const size = ref<string>();
 const swimming = ref<string>();
 const allergies = ref<boolean>();
@@ -313,6 +315,9 @@ function changeActiveImage(left: boolean) {
 }
 
 async function handleSubmit() {
+  console.log(`parent email: ${parentEmailAddress.value}`)
+  console.log(`leader email: ${leaderEmail.value}`)
+
   disableRegister.value = true;
   if (fullName.value == undefined) errorText.value = "Please enter full name";
   else if (gender.value == undefined) errorText.value = "Please choose gender";
@@ -323,6 +328,8 @@ async function handleSubmit() {
     errorText.value = "Please enter nationality";
   else if (idNumber.value == undefined)
     errorText.value = "Please enter ID number ";
+  else if (parentEmailAddress.value == undefined)
+    errorText.value = "Please enter parent's email";
   else if (emailAddress.value == undefined)
     errorText.value = "Please enter email";
   else if (phoneNumber.value == undefined)
@@ -341,6 +348,8 @@ async function handleSubmit() {
     errorText.value = "Please enter your leader's name";
   else if (leaderNumber.value == undefined)
     errorText.value = "Please enter your leader's contact number";
+  else if (leaderEmail.value == undefined)
+    errorText.value = "Please enter your leader's email";
   else if (size.value == undefined)
     errorText.value = "Please choose your shirt size";
   else if (swimming.value == undefined)
@@ -385,6 +394,7 @@ async function handleSubmit() {
         role: role.value,
         nationality: nationality.value,
         id_number: idNumber.value,
+        parent_email: parentEmailAddress.value,
         email: emailAddress.value,
         phone_number: phoneNumber.value,
         emergency_name: emergencyName.value,
@@ -393,6 +403,7 @@ async function handleSubmit() {
         // church_code: churchCode.value,
         youth_leader: leaderName.value,
         youth_number: leaderNumber.value,
+        leader_email: leaderEmail.value,
         shirt_size: size.value,
         graduating: graduating.value,
         launch_conf: launchConf.value,
@@ -711,6 +722,12 @@ function enableToaster(error: boolean, title: string, description: string) {
         :error="idNumber == undefined"
       />
       <TextInput
+        v-model="parentEmailAddress"
+        :title="'Parent Email Address'"
+        :placeholder="'e.g.: example@eyu.com'"
+        :error="parentEmailAddress == undefined"
+      />
+      <TextInput
         v-model="emailAddress"
         :title="'Email Address'"
         :placeholder="'e.g.: example@eyu.com'"
@@ -776,6 +793,12 @@ function enableToaster(error: boolean, title: string, description: string) {
       :title="'Youth Group Leader Contact'"
       :placeholder="'Enter leader\'s number'"
       :error="leaderNumber == undefined"
+      />
+      <TextInput
+      v-model="leaderEmail"
+      :title="'Youth Group Leader Email'"
+      :placeholder="'Enter leader\'s email'"
+      :error="leaderEmail == undefined"
       />
       <TextInput
         v-model="churchName"

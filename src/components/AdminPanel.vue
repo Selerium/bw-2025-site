@@ -21,6 +21,7 @@ const rows = ref([
     role: String,
     nationality: String,
     id_number: String,
+    parent_email: String,
     email: String,
     phone_number: String,
     emergency_name: String,
@@ -29,6 +30,7 @@ const rows = ref([
     church_code: String,
     youth_leader: String,
     youth_number: String,
+    leader_email: String,
     shirt_size: String,
     graduating: String,
     launch_conf: String,
@@ -58,6 +60,7 @@ const age_column = ref<boolean>(true);
 const role_column = ref<boolean>(true);
 const nationality_column = ref<boolean>(true);
 const id_number_column = ref<boolean>(true);
+const parent_email_column = ref<boolean>(true);
 const email_column = ref<boolean>(true);
 const phone_number_column = ref<boolean>(true);
 const emergency_name_column = ref<boolean>(true);
@@ -66,6 +69,7 @@ const church_name_column = ref<boolean>(true);
 const church_code_column = ref<boolean>(false);
 const youth_leader_column = ref<boolean>(true);
 const youth_number_column = ref<boolean>(true);
+const leader_email_column = ref<boolean>(true);
 const shirt_size_column = ref<boolean>(true);
 const graduating_column = ref<boolean>(true);
 const launch_conf_column = ref<boolean>(true);
@@ -113,7 +117,10 @@ async function checkLogIn() {
     if (data) rows.value = data;
     if (error) console.log(error);
 
-    const counts: Record<string, { signups: number; paidSignups: number, nonPaying: number }> = {};
+    const counts: Record<
+      string,
+      { signups: number; paidSignups: number; nonPaying: number }
+    > = {};
 
     rows.value.forEach((row) => {
       if (row["church_name"]) {
@@ -131,7 +138,7 @@ async function checkLogIn() {
           counts[row["church_name"].toString()] = {
             signups: 1,
             paidSignups: row["paid"] ? 1 : 0,
-            nonPaying: row["online_payment"] ? 0 : 1
+            nonPaying: row["online_payment"] ? 0 : 1,
           };
       }
     });
@@ -334,6 +341,10 @@ function readableValue(text: any) {
           <label>ID Number</label>
         </div>
         <div class="flex gap-2">
+          <input type="checkbox" v-model="parent_email_column" />
+          <label>Parent Email</label>
+        </div>
+        <div class="flex gap-2">
           <input type="checkbox" v-model="email_column" />
           <label>Email</label>
         </div>
@@ -363,7 +374,11 @@ function readableValue(text: any) {
         </div>
         <div class="flex gap-2">
           <input type="checkbox" v-model="youth_number_column" />
-          <label>Youth Number</label>
+          <label>Youth Leader Number</label>
+        </div>
+        <div class="flex gap-2">
+          <input type="checkbox" v-model="leader_email_column" />
+          <label>Youth Leader Email</label>
         </div>
         <div class="flex gap-2">
           <input type="checkbox" v-model="shirt_size_column" />
@@ -485,6 +500,12 @@ function readableValue(text: any) {
                 <p class="p-2 border-b border-r text-nowrap">EID/Passport</p>
               </th>
               <th
+                v-if="parent_email_column"
+                class="sticky top-0 right-0 bg-secondary drop-shadow-lg z-20 text-white"
+              >
+                <p class="p-2 border-b border-r text-nowrap">Parent Email</p>
+              </th>
+              <th
                 v-if="email_column"
                 class="sticky top-0 bg-secondary text-white"
               >
@@ -538,6 +559,14 @@ function readableValue(text: any) {
               >
                 <p class="p-2 border-b border-r text-nowrap">
                   Youth Leader Contact Number
+                </p>
+              </th>
+              <th
+                v-if="leader_email_column"
+                class="sticky top-0 right-0 bg-secondary drop-shadow-lg z-20 text-white"
+              >
+                <p class="p-2 border-b border-r text-nowrap">
+                  Youth Leader Email
                 </p>
               </th>
               <th
@@ -690,6 +719,12 @@ function readableValue(text: any) {
                 {{ readableValue(row["email"]) }}
               </td>
               <td
+                v-if="parent_email_column"
+                class="border-b border-r p-2 text-nowrap"
+              >
+                {{ readableValue(row["parent_email"]) }}
+              </td>
+              <td
                 v-if="phone_number_column"
                 class="border-b border-r p-2 text-nowrap"
               >
@@ -730,6 +765,12 @@ function readableValue(text: any) {
                 class="border-b border-r p-2 text-nowrap"
               >
                 {{ readableValue(row["youth_number"]) }}
+              </td>
+              <td
+                v-if="leader_email_column"
+                class="border-b border-r p-2 text-nowrap"
+              >
+                {{ readableValue(row["leader_email"]) }}
               </td>
               <td
                 v-if="shirt_size_column"
