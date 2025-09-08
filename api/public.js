@@ -7,7 +7,8 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const userData = await req.body.json();
+    const userData = req.body;
+    console.log(userData);
     
     const { data, error } = await supabase.from('registrations').insert(userData);
     if (error) {
@@ -23,7 +24,7 @@ export default async function handler(req, res) {
             'error': true,
             'title': 'User registered!',
             'message': 'Your details have been saved.',
-            'data': error
+            'data': data
         })
     }
 }
