@@ -380,7 +380,8 @@ async function handleSubmit() {
   }
 
   const res = await fetch(
-    "https://afqmzmqsvbxdyxuqhwfv.supabase.co/functions/v1/register-user",
+    "/api/public",
+    // "https://afqmzmqsvbxdyxuqhwfv.supabase.co/functions/v1/register-user",
     {
       method: "POST",
       headers: {
@@ -422,6 +423,8 @@ async function handleSubmit() {
     }
   );
   const data = await res.json();
+
+  console.log(data);
 
   enableToaster(data["error"], data["title"], data["message"]);
   disableRegister.value = false;
