@@ -18,6 +18,14 @@ export default async function handler(req, res) {
             'data': error
         })
     }
+    else {
+        return res.status(200).json({
+            'error': true,
+            'title': 'User registered!',
+            'message': 'Your details have been saved.',
+            'data': error
+        })
+    }
 }
 
 
