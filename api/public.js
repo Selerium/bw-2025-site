@@ -7,25 +7,20 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const userData = req.body;
-    
-    const { data, error } = await supabase.from('registrations-25').insert(userData);
-    if (error) {
-        return res.status(400).json({
-            'error': true,
-            'title': 'User not registered',
-            'message': 'We were not able to process your request. Please try again later.',
-            'data': error
-        })
-    }
-    else {
-        return res.status(200).json({
-            'error': false,
-            'title': 'User registered!',
-            'message': 'Your details have been saved.',
-            'data': data
-        })
-    }
+    const response = await fetch(
+      "https://afqmzmqsvbxdyxuqhwfv.supabase.co/functions/v1/register-user",
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(req.body),
+      }
+    )
+
+    const data = await response.json()
+
+    return res.status(response.status).json(data)
 }
 
 
