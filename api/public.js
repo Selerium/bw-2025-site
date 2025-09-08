@@ -12,13 +12,7 @@ export default async function handler(req, res) {
         body: supabaseData,
       }
     );
-    let userResponse = await supabaseRes.json();
-    return res.status(200).json({
-        error: false,
-        title: "Test",
-        message: supabaseRes
-    });
-
+    return supabaseRes;
   }
   //  else if (req.method === "GET") {
   //   } else {
