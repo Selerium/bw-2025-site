@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import TextInput from "./form/TextInput.vue";
-import { supabase } from "../lib/supabaseClient";
 import { computed } from "@vue/reactivity";
 
 const username = "arnoiscool";
