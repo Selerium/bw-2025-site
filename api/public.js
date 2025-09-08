@@ -8,9 +8,8 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export default async function handler(req, res) {
   if (req.method === "POST") {
     const userData = req.body;
-    const newUser = JSON.parse(userData);
     
-    const { data, error } = await supabase.from('registrations-25').insert(newUser);
+    const { data, error } = await supabase.from('registrations-25').insert(userData);
     if (error) {
         return res.status(400).json({
             'error': true,
