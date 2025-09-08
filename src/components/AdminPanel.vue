@@ -109,13 +109,18 @@ async function checkLogIn() {
   if (inputUsername.value == username && inputPassword.value == password) {
     loggedIn.value = true;
 
-    let { data, error } = await supabase
-      .from("registrations-25")
-      .select("*")
-      .order("created_at");
+    let data = await fetch(
+      "/api/public",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
 
-    if (data) rows.value = data;
-    if (error) console.log(error);
+    const userData = await data.json();
+    if (userData) rows.value = userData;
 
     const counts: Record<
       string,
