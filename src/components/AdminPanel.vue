@@ -1,125 +1,491 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import TextInput from "./form/TextInput.vue";
 import { computed } from "@vue/reactivity";
+import { supabase } from "../lib/supabaseClient";
+import DropdownInput from "./form/DropdownInput.vue";
+
+const sampleRecords = [
+  {
+    id: "USR001",
+    created_at: "2025-09-15T10:23:00Z",
+    full_name: "Emily Johnson",
+    gender: "Female",
+    date_of_birth: "2007-03-12",
+    age: "18",
+    role: "Participant",
+    nationality: "American",
+    id_number: "A123456789",
+    parent_email: "susan.johnson@example.com",
+    email: "emily.johnson@example.com",
+    phone_number: "+1-555-324-9876",
+    emergency_name: "Michael Johnson",
+    emergency_number: "+1-555-201-4433",
+    church_name: "Grace Community Church",
+    church_code: "GCC-102",
+    youth_leader: "Pastor Daniel Smith",
+    youth_number: "+1-555-765-3344",
+    leader_email: "daniel.smith@gcc.org",
+    shirt_size: "M",
+    graduating: "Yes",
+    launch_conf: "Yes",
+    swimming: "Yes",
+    allergies: "No",
+    allergies_info: "",
+    medication: "No",
+    medication_info: "",
+    eyu_cap: "Yes",
+    bw_25_shirt: "Yes",
+    bw_25_shirt_size: "M",
+    online_payment: "Yes",
+    acknowledgement: "Yes",
+    paid: true,
+  },
+  {
+    id: "USR002",
+    created_at: "2025-09-16T14:55:30Z",
+    full_name: "Joshua Martinez",
+    gender: "Male",
+    date_of_birth: "2008-11-25",
+    age: "16",
+    role: "Participant",
+    nationality: "Mexican",
+    id_number: "MEX9023345",
+    parent_email: "luis.martinez@example.com",
+    email: "joshua.martinez@example.com",
+    phone_number: "+52-55-8723-1144",
+    emergency_name: "Laura Martinez",
+    emergency_number: "+52-55-8723-2290",
+    church_name: "Iglesia Nueva Vida",
+    church_code: "INV-210",
+    youth_leader: "Maria Lopez",
+    youth_number: "+52-55-8723-1188",
+    leader_email: "maria.lopez@inv.org",
+    shirt_size: "L",
+    graduating: "No",
+    launch_conf: "Yes",
+    swimming: "No",
+    allergies: "Yes",
+    allergies_info: "Peanuts",
+    medication: "Yes",
+    medication_info: "Asthma inhaler",
+    eyu_cap: "No",
+    bw_25_shirt: "Yes",
+    bw_25_shirt_size: "L",
+    online_payment: "No",
+    acknowledgement: "Yes",
+    paid: false,
+  },
+  {
+    id: "USR003",
+    created_at: "2025-09-17T09:10:45Z",
+    full_name: "Sophia Kim",
+    gender: "Female",
+    date_of_birth: "2006-07-05",
+    age: "19",
+    role: "Leader",
+    nationality: "South Korean",
+    id_number: "KR200678912",
+    parent_email: "min.park@example.com",
+    email: "sophia.kim@example.com",
+    phone_number: "+82-10-4432-7788",
+    emergency_name: "Min Park",
+    emergency_number: "+82-10-4422-1199",
+    church_name: "Seoul Central Church",
+    church_code: "SCC-555",
+    youth_leader: "Rev. Han Lee",
+    youth_number: "+82-10-5533-2211",
+    leader_email: "han.lee@scc.org",
+    shirt_size: "S",
+    graduating: "Yes",
+    launch_conf: "No",
+    swimming: "Yes",
+    allergies: "Yes",
+    allergies_info: "Seafood",
+    medication: "No",
+    medication_info: "",
+    eyu_cap: "Yes",
+    bw_25_shirt: "No",
+    bw_25_shirt_size: "",
+    online_payment: "Yes",
+    acknowledgement: "Yes",
+    paid: true,
+  },
+  {
+    id: "USR003",
+    created_at: "2025-09-17T09:10:45Z",
+    full_name: "Sophia Kim",
+    gender: "Female",
+    date_of_birth: "2006-07-05",
+    age: "19",
+    role: "Leader",
+    nationality: "South Korean",
+    id_number: "KR200678912",
+    parent_email: "min.park@example.com",
+    email: "sophia.kim@example.com",
+    phone_number: "+82-10-4432-7788",
+    emergency_name: "Min Park",
+    emergency_number: "+82-10-4422-1199",
+    church_name: "Seoul Central Church",
+    church_code: "SCC-555",
+    youth_leader: "Rev. Han Lee",
+    youth_number: "+82-10-5533-2211",
+    leader_email: "han.lee@scc.org",
+    shirt_size: "S",
+    graduating: "Yes",
+    launch_conf: "No",
+    swimming: "Yes",
+    allergies: "Yes",
+    allergies_info: "Seafood",
+    medication: "No",
+    medication_info: "",
+    eyu_cap: "Yes",
+    bw_25_shirt: "No",
+    bw_25_shirt_size: "",
+    online_payment: "Yes",
+    acknowledgement: "Yes",
+    paid: true,
+  },
+  {
+    id: "USR003",
+    created_at: "2025-09-17T09:10:45Z",
+    full_name: "Sophia Kim",
+    gender: "Female",
+    date_of_birth: "2006-07-05",
+    age: "19",
+    role: "Leader",
+    nationality: "South Korean",
+    id_number: "KR200678912",
+    parent_email: "min.park@example.com",
+    email: "sophia.kim@example.com",
+    phone_number: "+82-10-4432-7788",
+    emergency_name: "Min Park",
+    emergency_number: "+82-10-4422-1199",
+    church_name: "Seoul Central Church",
+    church_code: "SCC-555",
+    youth_leader: "Rev. Han Lee",
+    youth_number: "+82-10-5533-2211",
+    leader_email: "han.lee@scc.org",
+    shirt_size: "S",
+    graduating: "Yes",
+    launch_conf: "No",
+    swimming: "Yes",
+    allergies: "Yes",
+    allergies_info: "Seafood",
+    medication: "No",
+    medication_info: "",
+    eyu_cap: "Yes",
+    bw_25_shirt: "No",
+    bw_25_shirt_size: "",
+    online_payment: "Yes",
+    acknowledgement: "Yes",
+    paid: true,
+  },
+  {
+    id: "USR003",
+    created_at: "2025-09-17T09:10:45Z",
+    full_name: "Sophia Kim",
+    gender: "Female",
+    date_of_birth: "2006-07-05",
+    age: "19",
+    role: "Leader",
+    nationality: "South Korean",
+    id_number: "KR200678912",
+    parent_email: "min.park@example.com",
+    email: "sophia.kim@example.com",
+    phone_number: "+82-10-4432-7788",
+    emergency_name: "Min Park",
+    emergency_number: "+82-10-4422-1199",
+    church_name: "Seoul Central Church",
+    church_code: "SCC-555",
+    youth_leader: "Rev. Han Lee",
+    youth_number: "+82-10-5533-2211",
+    leader_email: "han.lee@scc.org",
+    shirt_size: "S",
+    graduating: "Yes",
+    launch_conf: "No",
+    swimming: "Yes",
+    allergies: "Yes",
+    allergies_info: "Seafood",
+    medication: "No",
+    medication_info: "",
+    eyu_cap: "Yes",
+    bw_25_shirt: "No",
+    bw_25_shirt_size: "",
+    online_payment: "Yes",
+    acknowledgement: "Yes",
+    paid: true,
+  },
+  {
+    id: "USR003",
+    created_at: "2025-09-17T09:10:45Z",
+    full_name: "Sophia Kim",
+    gender: "Female",
+    date_of_birth: "2006-07-05",
+    age: "19",
+    role: "Leader",
+    nationality: "South Korean",
+    id_number: "KR200678912",
+    parent_email: "min.park@example.com",
+    email: "sophia.kim@example.com",
+    phone_number: "+82-10-4432-7788",
+    emergency_name: "Min Park",
+    emergency_number: "+82-10-4422-1199",
+    church_name: "Seoul Central Church",
+    church_code: "SCC-555",
+    youth_leader: "Rev. Han Lee",
+    youth_number: "+82-10-5533-2211",
+    leader_email: "han.lee@scc.org",
+    shirt_size: "S",
+    graduating: "Yes",
+    launch_conf: "No",
+    swimming: "Yes",
+    allergies: "Yes",
+    allergies_info: "Seafood",
+    medication: "No",
+    medication_info: "",
+    eyu_cap: "Yes",
+    bw_25_shirt: "No",
+    bw_25_shirt_size: "",
+    online_payment: "Yes",
+    acknowledgement: "Yes",
+    paid: true,
+  },
+  {
+    id: "USR003",
+    created_at: "2025-09-17T09:10:45Z",
+    full_name: "Sophia Kim",
+    gender: "Female",
+    date_of_birth: "2006-07-05",
+    age: "19",
+    role: "Leader",
+    nationality: "South Korean",
+    id_number: "KR200678912",
+    parent_email: "min.park@example.com",
+    email: "sophia.kim@example.com",
+    phone_number: "+82-10-4432-7788",
+    emergency_name: "Min Park",
+    emergency_number: "+82-10-4422-1199",
+    church_name: "Seoul Central Church",
+    church_code: "SCC-555",
+    youth_leader: "Rev. Han Lee",
+    youth_number: "+82-10-5533-2211",
+    leader_email: "han.lee@scc.org",
+    shirt_size: "S",
+    graduating: "Yes",
+    launch_conf: "No",
+    swimming: "Yes",
+    allergies: "Yes",
+    allergies_info: "Seafood",
+    medication: "No",
+    medication_info: "",
+    eyu_cap: "Yes",
+    bw_25_shirt: "No",
+    bw_25_shirt_size: "",
+    online_payment: "Yes",
+    acknowledgement: "Yes",
+    paid: true,
+  },
+  {
+    id: "USR003",
+    created_at: "2025-09-17T09:10:45Z",
+    full_name: "Sophia Kim",
+    gender: "Female",
+    date_of_birth: "2006-07-05",
+    age: "19",
+    role: "Leader",
+    nationality: "South Korean",
+    id_number: "KR200678912",
+    parent_email: "min.park@example.com",
+    email: "sophia.kim@example.com",
+    phone_number: "+82-10-4432-7788",
+    emergency_name: "Min Park",
+    emergency_number: "+82-10-4422-1199",
+    church_name: "Seoul Central Church",
+    church_code: "SCC-555",
+    youth_leader: "Rev. Han Lee",
+    youth_number: "+82-10-5533-2211",
+    leader_email: "han.lee@scc.org",
+    shirt_size: "S",
+    graduating: "Yes",
+    launch_conf: "No",
+    swimming: "Yes",
+    allergies: "Yes",
+    allergies_info: "Seafood",
+    medication: "No",
+    medication_info: "",
+    eyu_cap: "Yes",
+    bw_25_shirt: "No",
+    bw_25_shirt_size: "",
+    online_payment: "Yes",
+    acknowledgement: "Yes",
+    paid: true,
+  },
+  {
+    id: "USR003",
+    created_at: "2025-09-17T09:10:45Z",
+    full_name: "Sophia Kim",
+    gender: "Female",
+    date_of_birth: "2006-07-05",
+    age: "19",
+    role: "Leader",
+    nationality: "South Korean",
+    id_number: "KR200678912",
+    parent_email: "min.park@example.com",
+    email: "sophia.kim@example.com",
+    phone_number: "+82-10-4432-7788",
+    emergency_name: "Min Park",
+    emergency_number: "+82-10-4422-1199",
+    church_name: "Seoul Central Church",
+    church_code: "SCC-555",
+    youth_leader: "Rev. Han Lee",
+    youth_number: "+82-10-5533-2211",
+    leader_email: "han.lee@scc.org",
+    shirt_size: "S",
+    graduating: "Yes",
+    launch_conf: "No",
+    swimming: "Yes",
+    allergies: "Yes",
+    allergies_info: "Seafood",
+    medication: "No",
+    medication_info: "",
+    eyu_cap: "Yes",
+    bw_25_shirt: "No",
+    bw_25_shirt_size: "",
+    online_payment: "Yes",
+    acknowledgement: "Yes",
+    paid: true,
+  },
+];
 
 const username = "arnoiscool";
 const password = "coolisarno";
 
-const loggedIn = ref<boolean>(false);
+const currentChurch = ref<string>("YFC");
+const userSelected = ref<boolean>(false);
+const selectedUser = ref<{}>();
+const loggedIn = ref<boolean>(true);
 const inputUsername = ref<string>();
 const inputPassword = ref<string>();
 const rows = ref([
   {
-    id: String,
-    created_at: String,
-    full_name: String,
-    gender: String,
-    date_of_birth: String,
-    age: String,
-    role: String,
-    nationality: String,
-    id_number: String,
-    parent_email: String,
-    email: String,
-    phone_number: String,
-    emergency_name: String,
-    emergency_number: String,
-    church_name: String,
-    church_code: String,
-    youth_leader: String,
-    youth_number: String,
-    leader_email: String,
-    shirt_size: String,
-    graduating: String,
-    launch_conf: String,
-    swimming: String,
-    allergies: String,
-    allergies_info: String,
-    medication: String,
-    medication_info: String,
-    eyu_cap: String,
-    bw_25_shirt: String,
-    bw_25_shirt_size: String,
-    online_payment: String,
-    acknowledgement: String,
-    paid: Boolean,
+    id: '',
+    created_at: '',
+    full_name: '',
+    gender: '',
+    date_of_birth: '',
+    age: '',
+    role: '',
+    nationality: '',
+    id_number: '',
+    parent_email: '',
+    email: '',
+    phone_number: '',
+    emergency_name: '',
+    emergency_number: '',
+    church_name: '',
+    church_code: '',
+    youth_leader: '',
+    youth_number: '',
+    leader_email: '',
+    shirt_size: '',
+    graduating: '',
+    launch_conf: '',
+    swimming: '',
+    allergies: false,
+    allergies_info: '',
+    medication: false,
+    medication_info: '',
+    eyu_cap: '',
+    bw_25_shirt: '',
+    bw_25_shirt_size: '',
+    online_payment: '',
+    acknowledgement: '',
+    paid: false,
   },
 ]);
-const showFilters = ref<boolean>(false);
+// const showFilters = ref<boolean>(false);
 const searchText = ref<string>("");
-const chosenColumn = ref("");
+// const chosenColumn = ref("");
 
-const ID_column = ref<boolean>(false);
-const datetime_column = ref<boolean>(false);
-const full_name_column = ref<boolean>(true);
-const gender_column = ref<boolean>(true);
-const date_of_birth_column = ref<boolean>(true);
-const age_column = ref<boolean>(true);
-const role_column = ref<boolean>(true);
-const nationality_column = ref<boolean>(true);
-const id_number_column = ref<boolean>(true);
-const parent_email_column = ref<boolean>(true);
-const email_column = ref<boolean>(true);
-const phone_number_column = ref<boolean>(true);
-const emergency_name_column = ref<boolean>(true);
-const emergency_number_column = ref<boolean>(true);
-const church_name_column = ref<boolean>(true);
-const church_code_column = ref<boolean>(false);
-const youth_leader_column = ref<boolean>(true);
-const youth_number_column = ref<boolean>(true);
-const leader_email_column = ref<boolean>(true);
-const shirt_size_column = ref<boolean>(true);
-const graduating_column = ref<boolean>(true);
-const launch_conf_column = ref<boolean>(true);
-const swimming_column = ref<boolean>(true);
-const allergies_column = ref<boolean>(true);
-const allergies_info_column = ref<boolean>(true);
-const medication_column = ref<boolean>(true);
-const medication_info_column = ref<boolean>(true);
-const eyu_cap_column = ref<boolean>(true);
-const bw_25_shirt_column = ref<boolean>(true);
-const bw_25_shirt_size_column = ref<boolean>(true);
-const online_payment_column = ref<boolean>(true);
-const acknowledgement_column = ref<boolean>(false);
-const paid_column = ref<boolean>(true);
+// const ID_column = ref<boolean>(false);
+// const datetime_column = ref<boolean>(false);
+// const full_name_column = ref<boolean>(true);
+// const gender_column = ref<boolean>(true);
+// const date_of_birth_column = ref<boolean>(true);
+// const age_column = ref<boolean>(true);
+// const role_column = ref<boolean>(true);
+// const nationality_column = ref<boolean>(true);
+// const id_number_column = ref<boolean>(true);
+// const parent_email_column = ref<boolean>(true);
+// const email_column = ref<boolean>(true);
+// const phone_number_column = ref<boolean>(true);
+// const emergency_name_column = ref<boolean>(true);
+// const emergency_number_column = ref<boolean>(true);
+// const church_name_column = ref<boolean>(true);
+// const church_code_column = ref<boolean>(false);
+// const youth_leader_column = ref<boolean>(true);
+// const youth_number_column = ref<boolean>(true);
+// const leader_email_column = ref<boolean>(true);
+// const shirt_size_column = ref<boolean>(true);
+// const graduating_column = ref<boolean>(true);
+// const launch_conf_column = ref<boolean>(true);
+// const swimming_column = ref<boolean>(true);
+// const allergies_column = ref<boolean>(true);
+// const allergies_info_column = ref<boolean>(true);
+// const medication_column = ref<boolean>(true);
+// const medication_info_column = ref<boolean>(true);
+// const eyu_cap_column = ref<boolean>(true);
+// const bw_25_shirt_column = ref<boolean>(true);
+// const bw_25_shirt_size_column = ref<boolean>(true);
+// const online_payment_column = ref<boolean>(true);
+// const acknowledgement_column = ref<boolean>(false);
+// const paid_column = ref<boolean>(true);
 const church_names = ref<any>();
-const showBreakup = ref<boolean>(false);
-const showMasterList = ref<boolean>(true);
+const churches = ref<any>();
+// const showBreakup = ref<boolean>(false);
+// const showMasterList = ref<boolean>(true);
 
 const filteredRows = computed(() => {
+  console.log(searchText.value);
   if (!searchText.value) return rows.value;
 
-  if (!chosenColumn.value)
+  // if (!chosenColumn.value)
     return rows.value.filter((row) =>
       Object.values(row).some((field) =>
         String(field).toLowerCase().includes(searchText.value.toLowerCase())
       )
     );
 
-  return rows.value.filter((row) =>
-    String(row[chosenColumn.value as keyof typeof row])
-      .toLowerCase()
-      .includes(searchText.value.toLowerCase())
-  );
+  // return rows.value.filter((row) =>
+  //   String(row[chosenColumn.value as keyof typeof row])
+  //     .toLowerCase()
+  //     .includes(searchText.value.toLowerCase())
+  // );
 });
 
 async function checkLogIn() {
-  if (inputUsername.value == username && inputPassword.value == password) {
+  if (loggedIn.value == true || (inputUsername.value == username && inputPassword.value == password)) {
     loggedIn.value = true;
 
-    let data = await fetch(
-      "/api/public",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    // let data = await fetch("/api/public", {
+    //   method: "GET",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
 
-    const userData = await data.json();
-    if (userData) rows.value = userData;
+    // const userData = await data.json();
+    // if (userData) rows.value = userData;
+
+    let { data, error } = await supabase
+      .from("registrations-25")
+      .select("*")
+      .order("created_at");
+
+    if (error)
+      console.log(error);
+    if (data) rows.value = data;
 
     const counts: Record<
       string,
@@ -152,23 +518,37 @@ async function checkLogIn() {
       info,
     }));
 
-    console.log(church_names.value);
+    churches.value = church_names.value.map((item: any) => item.name);
   }
 }
 
-function toggleFilters() {
-  showFilters.value = !showFilters.value;
+// function toggleFilters() {
+//   showFilters.value = !showFilters.value;
+// }
+
+// function readableValue(text: any) {
+//   return text === true
+//     ? "Yes"
+//     : text === false
+//     ? "No"
+//     : text === undefined || text == null
+//     ? "-"
+//     : text;
+// }
+
+function chooseUser(user: object) {
+  selectedUser.value = user;
+  console.log(user);
+  userSelected.value = true;
 }
 
-function readableValue(text: any) {
-  return text === true
-    ? "Yes"
-    : text === false
-    ? "No"
-    : text === undefined || text == null
-    ? "-"
-    : text;
+function unchooseUser() {
+  userSelected.value = false;
 }
+
+onMounted(() => {
+  checkLogIn();
+})
 </script>
 
 <template>
@@ -199,685 +579,138 @@ function readableValue(text: any) {
     </div>
   </div>
 
-  <div class="w-full h-fit" v-if="loggedIn">
-    <div
-      class="box-border p-4 flex flex-col justify-start items-center gap-4 w-full h-fit"
-    >
+  <div class="w-full flex justify-center bg-gray-300">
+    <div class="flex flex-col items-start w-10/12 gap-4 p-2" v-if="loggedIn">
       <div class="w-full flex justify-between items-center">
-        <h2 class="text-center md:text-left text-2xl font-semibold w-full">
-          Student Breakup
-        </h2>
-        <img
-          src="/arrow.png"
-          @click="() => (showBreakup = !showBreakup)"
-          :class="showBreakup ? 'rotate-180' : ''"
-          class="w-6 h-4 invert-100 cursor-pointer"
-        />
+        <h1 class="text-xl font-bold">Admin Panel</h1>
+        <div class="flex gap-2 items-center">
+          <p>Logged In As:</p>
+          <button
+            class="bg-neutral-100 p-2 border rounded font-bold hover:scale-105 transition-all cursor-pointer"
+          >
+            {{ currentChurch }} <ion-icon name="caret-down-outline"></ion-icon>
+          </button>
+        </div>
       </div>
-      <div v-if="showBreakup" class="w-full flex flex-col rounded-lg">
-        <div class="w-full flex">
-          <p class="p-2 w-1/4 bg-secondary text-white font-semibold border">
-            Church Name
-          </p>
-          <p class="p-2 w-1/4 bg-secondary text-white font-semibold border">
-            Total Participants
-          </p>
-          <p class="p-2 w-1/4 bg-secondary text-white font-semibold border">
-            Paid Participants
-          </p>
-          <p class="p-2 w-1/4 bg-secondary text-white font-semibold border">
-            Sponsorship Participants
-          </p>
-        </div>
-        <div v-for="church in church_names" class="w-full flex">
-          <p class="p-2 w-1/4 border">{{ church["name"] }}</p>
-          <p class="p-2 w-1/4 border">{{ church["info"]["signups"] }}</p>
-          <p class="p-2 w-1/4 border">{{ church["info"]["paidSignups"] }}</p>
-          <p class="p-2 w-1/4 border">{{ church["info"]["nonPaying"] }}</p>
-        </div>
-        <div class="w-full flex">
-          <p class="p-2 w-1/4 border font-semibold">Total</p>
-          <p class="p-2 w-1/4 border font-semibold">{{ rows.length }}</p>
-          <p class="p-2 w-1/4 border font-semibold">
-            {{ rows.filter((row) => row["paid"]).length }}
-          </p>
-          <p class="p-2 w-1/4 border font-semibold">
-            {{ rows.filter((row) => !row["online_payment"]).length }}
-          </p>
+      <div class="w-full flex gap-2 mb-4">
+        <TextInput v-model="searchText" :extraCss="'border-neutral-500 bg-neutral-100'" :title="'Search by Name'" :placeholder="'Search...'"></TextInput>
+        <DropdownInput :extraCss="'border-neutral-500 bg-neutral-100'" :title="'Choose Role'" :placeholder="'Choose Role'" :options="['leader', 'student']"></DropdownInput>
+        <DropdownInput :extraCss="'border-neutral-500 bg-neutral-100'" :title="'Choose Church'" :placeholder="'Choose Church'" :options="churches" :disabled="currentChurch != 'YFC'"></DropdownInput>
+      </div>
+      <!-- <div class="w-full h-[1px] bg-black"></div> -->
+      <div class="w-full grid lg:grid-cols-2 grid-cols-1 gap-4 h-full">
+        <div v-for="record in filteredRows">
+          <div
+            class="bg-neutral-100 border border-neutral-500 shadow-2xl rounded flex flex-col items-start gap-2 p-2"
+          >
+            <div class="flex lg:flex-row flex-col gap-2 w-full">
+              <div class="text-left flex flex-col items-start grow">
+                <p class="font-bold">{{ record.full_name }}</p>
+                <p>{{ record.church_name }} ({{ record.youth_leader }})</p>
+              </div>
+              <p
+                class="rounded p-2 h-fit pt-3 font-semibold text-white bg-red-900"
+                v-if="record.role === 'leader'"
+              >
+                LEADER
+              </p>
+              <p
+                class="rounded p-2 h-fit pt-3 font-semibold text-white"
+                :class="
+                  record.gender === 'female' ? 'bg-pink-700' : 'bg-blue-700'
+                "
+              >
+                {{ record.age }} {{ record.gender.charAt(0).toUpperCase() }}
+              </p>
+            </div>
+            <div class="w-full bg-black h-[1px]"></div>
+            <div
+              class="w-full flex lg:flex-row flex-col justify-between items-end gap-2"
+            >
+              <div class="w-full text-left">
+                <p>
+                  Phone Number:
+                  <a :href="`tel${record.phone_number}`" class="underline font-semibold">{{ record.phone_number }} </a>
+                </p>
+                <p>
+                  Email Address:
+                  <a :href="`mailto:${record.email}`" class="underline font-semibold">{{ record.email }} </a>
+                </p>
+                <p>
+                  Parent Email Address:
+                  <span class="font-semibold">{{ record.parent_email ?? '---' }} </span>
+                </p>
+                <p>
+                  Medication Information:
+                  <span class="font-semibold"
+                    >{{
+                      record.medication
+                        ? record.medication_info
+                        : "None"
+                    }}
+                  </span>
+                </p>
+                <p>
+                  Allergy Information:
+                  <span class="font-semibold"
+                    >{{
+                      record.allergies
+                        ? record.allergies_info
+                        : "None"
+                    }}
+                  </span>
+                </p>
+                <p>
+                  Swimming:
+                  <span class="font-semibold"
+                    >{{ record.swimming === "Yes" ? "Allowed" : "Not Allowed" }}
+                  </span>
+                </p>
+                <p>
+                  Emergency Contact:
+                  <span class="font-semibold"
+                    >{{ record.emergency_name }}
+                  </span>
+                </p>
+                <p>
+                  Emergency Number:
+                  <span class="font-semibold"
+                    >{{ record.emergency_number }}
+                  </span>
+                </p>
+              </div>
+              <button
+                @click="chooseUser(record)"
+                class="h-fit w-fit not-lg:w-full p-2 rounded border hover:scale-105 transition-all cursor-pointer hover:text-white hover:bg-blue-950 font-semibold"
+              >
+                View Full Info
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="h-0.5 w-full bg-black"></div>
+
     <div
-      class="box-border p-4 flex flex-col justify-start items-center gap-4 w-full h-dvh"
+      class="w-full h-dvh absolute flex justify-end backdrop-blur-lg backdrop-brightness-75 transition-all overflow-hidden"
+      :class="userSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'"
     >
-      <div class="flex flex-wrap gap-4 justify-between items-center w-full">
-        <div class="flex md:flex-row flex-col items-center gap-2">
-          <h1 class="text-center md:text-left text-2xl font-semibold w-full">
-            Registrations Master List
-          </h1>
+      <div class="rounded bg-white w-1/3 min-w-72 h-full p-4 flex flex-col transition-all"
+      :class="userSelected ? 'translate-x-0' : 'translate-x-full'"
+      >
+        <div class="flex items-center gap-2">
           <button
-            @click="toggleFilters"
-            class="w-fit text-nowrap cursor-pointer px-4 pb-2 pt-3 bg-primary text-white rounded-lg font-semibold"
+            @click="unchooseUser"
+            class="px-2 pt-1 rounded border hover:scale-105 transition-all cursor-pointer"
           >
-            {{ showFilters ? "HIDE" : "SHOW" }} FILTERS
+            X
           </button>
+          <p>User Details</p>
         </div>
-        <div
-          class="w-1/3 min-w-72 flex flex-col md:flex-row items-center gap-2"
-        >
-          <label class="m-0">Search by:</label>
-          <select v-model="chosenColumn" class="p-3 border rounded-lg">
-            <option selected value="">* (all columns)</option>
-            <option value="ID">ID</option>
-            <option value="datetime">Date Registered</option>
-            <option value="full_name">Full Name</option>
-            <option value="gender">Gender</option>
-            <option value="date_of_birth">Date Of Birth</option>
-            <option value="age">Age</option>
-            <option value="role">Role</option>
-            <option value="nationality">Nationality</option>
-            <option value="id_number">ID Number</option>
-            <option value="email">Email</option>
-            <option value="phone_number">Phone Number</option>
-            <option value="emergency_name">Emergency Name</option>
-            <option value="emergency_number">Emergency Number</option>
-            <option value="church_name">Church Name</option>
-            <option value="youth_leader">Youth Leader</option>
-            <option value="youth_number">Youth Leader Number</option>
-            <option value="shirt_size">Shirt Size</option>
-            <option value="allergies_info">Allergies Info</option>
-            <option value="medication_info">Medication Info</option>
-          </select>
-          <input
-            v-model="searchText"
-            class="grow rounded-lg p-2 border"
-            type="text"
-            placeholder="e.g.: Name, Leader, Church, etc..."
-          />
-          <img
-            src="/arrow.png"
-            @click="() => (showMasterList = !showMasterList)"
-            :class="showMasterList ? 'rotate-180' : ''"
-            class="w-6 h-4 invert-100 cursor-pointer"
-          />
-        </div>
-      </div>
-
-      <div
-        v-if="showFilters"
-        class="w-full flex flex-wrap gap-x-4 gap-y-2 items-center justify-start"
-      >
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="ID_column" />
-          <label>ID</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="datetime_column" />
-          <label>Date Registered</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="full_name_column" />
-          <label>Full Name</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="gender_column" />
-          <label>Gender</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="date_of_birth_column" />
-          <label>Date Of Birth</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="age_column" />
-          <label>Age</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="role_column" />
-          <label>Role</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="nationality_column" />
-          <label>Nationality</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="id_number_column" />
-          <label>ID Number</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="parent_email_column" />
-          <label>Parent Email</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="email_column" />
-          <label>Email</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="phone_number_column" />
-          <label>Phone Number</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="emergency_name_column" />
-          <label>Emergency Name</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="emergency_number_column" />
-          <label>Emergency Number</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="church_name_column" />
-          <label>Church Name</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="church_code_column" />
-          <label>Church Code</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="youth_leader_column" />
-          <label>Youth Leader</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="youth_number_column" />
-          <label>Youth Leader Number</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="leader_email_column" />
-          <label>Youth Leader Email</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="shirt_size_column" />
-          <label>Shirt Size</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="graduating_column" />
-          <label>Graduating</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="launch_conf_column" />
-          <label>Launch Conf</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="swimming_column" />
-          <label>Swimming</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="allergies_column" />
-          <label>Allergies</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="allergies_info_column" />
-          <label>Allergies Info</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="medication_column" />
-          <label>Medication</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="medication_info_column" />
-          <label>Medication Info</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="eyu_cap_column" />
-          <label>EYU Cap</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="bw_25_shirt_column" />
-          <label>BW 25 Shirt</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="bw_25_shirt_size_column" />
-          <label>BW 25 Shirt Size</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="online_payment_column" />
-          <label>Online Payment</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="acknowledgement_column" />
-          <label>Acknowledgement</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="checkbox" v-model="paid_column" />
-          <label>Paid</label>
-        </div>
-      </div>
-
-      <div
-        v-if="showMasterList"
-        class="border rounded-lg w-full overflow-y-scroll"
-      >
-        <table class="border-collapse">
-          <thead>
-            <tr>
-              <th class="sticky top-0 bg-secondary text-white">
-                <p class="p-2 border-b border-r text-nowrap">ID</p>
-              </th>
-              <th v-if="ID_column" class="sticky top-0 bg-secondary text-white">
-                <p class="p-2 border-b border-r text-nowrap">Database ID</p>
-              </th>
-              <th
-                v-if="datetime_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Date Registered</p>
-              </th>
-              <th
-                v-if="full_name_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Full Name</p>
-              </th>
-              <th
-                v-if="gender_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Gender</p>
-              </th>
-              <th
-                v-if="date_of_birth_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">DOB</p>
-              </th>
-              <th
-                v-if="age_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Age</p>
-              </th>
-              <th
-                v-if="role_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Role</p>
-              </th>
-              <th
-                v-if="nationality_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Nationality</p>
-              </th>
-              <th
-                v-if="id_number_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">EID/Passport</p>
-              </th>
-              <th
-                v-if="parent_email_column"
-                class="sticky top-0 right-0 bg-secondary drop-shadow-lg z-20 text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Parent Email</p>
-              </th>
-              <th
-                v-if="email_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Email Address</p>
-              </th>
-              <th
-                v-if="phone_number_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Phone Number</p>
-              </th>
-              <th
-                v-if="emergency_name_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  Emergency Contact
-                </p>
-              </th>
-              <th
-                v-if="emergency_number_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  Emergency Contact Number
-                </p>
-              </th>
-              <th
-                v-if="church_name_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Church Name</p>
-              </th>
-              <th
-                v-if="church_code_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  Church Code (unused)
-                </p>
-              </th>
-              <th
-                v-if="youth_leader_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Youth Leader</p>
-              </th>
-              <th
-                v-if="youth_number_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  Youth Leader Contact Number
-                </p>
-              </th>
-              <th
-                v-if="leader_email_column"
-                class="sticky top-0 right-0 bg-secondary drop-shadow-lg z-20 text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  Youth Leader Email
-                </p>
-              </th>
-              <th
-                v-if="shirt_size_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Shirt Size</p>
-              </th>
-              <th
-                v-if="graduating_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Graduating?</p>
-              </th>
-              <th
-                v-if="launch_conf_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  Launch Conf Interest?
-                </p>
-              </th>
-              <th
-                v-if="swimming_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  Swimming Proficiency
-                </p>
-              </th>
-              <th
-                v-if="allergies_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Allergies?</p>
-              </th>
-              <th
-                v-if="allergies_info_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  Allergy Information
-                </p>
-              </th>
-              <th
-                v-if="medication_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Medication?</p>
-              </th>
-              <th
-                v-if="medication_info_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  Medication Information
-                </p>
-              </th>
-              <th
-                v-if="eyu_cap_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">EYU Cap?</p>
-              </th>
-              <th
-                v-if="bw_25_shirt_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  BW25 Limited Edition Sweater?
-                </p>
-              </th>
-              <th
-                v-if="bw_25_shirt_size_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">
-                  BW25 Limited Edition Sweater Size
-                </p>
-              </th>
-              <th
-                v-if="online_payment_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Paying Online?</p>
-              </th>
-              <th
-                v-if="acknowledgement_column"
-                class="sticky top-0 bg-secondary text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Acknowledgement</p>
-              </th>
-              <th
-                v-if="paid_column"
-                class="sticky top-0 right-0 bg-secondary drop-shadow-lg z-20 text-white"
-              >
-                <p class="p-2 border-b border-r text-nowrap">Paid?</p>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, idx) in filteredRows" :key="idx">
-              <td class="border-b border-r p-2 text-nowrap">{{ idx + 1 }}</td>
-              <td v-if="ID_column" class="border-b border-r p-2 text-nowrap">
-                {{ readableValue(row["id"]) }}
-              </td>
-              <td
-                v-if="datetime_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["created_at"]) }}
-              </td>
-              <td
-                v-if="full_name_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["full_name"]) }}
-              </td>
-              <td
-                v-if="gender_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["gender"]) }}
-              </td>
-              <td
-                v-if="date_of_birth_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["date_of_birth"]) }}
-              </td>
-              <td v-if="age_column" class="border-b border-r p-2 text-nowrap">
-                {{ readableValue(row["age"]) }}
-              </td>
-              <td v-if="role_column" class="border-b border-r p-2 text-nowrap">
-                {{ readableValue(row["role"]) }}
-              </td>
-              <td
-                v-if="nationality_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["nationality"]) }}
-              </td>
-              <td
-                v-if="id_number_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["id_number"]) }}
-              </td>
-              <td v-if="email_column" class="border-b border-r p-2 text-nowrap">
-                {{ readableValue(row["email"]) }}
-              </td>
-              <td
-                v-if="parent_email_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["parent_email"]) }}
-              </td>
-              <td
-                v-if="phone_number_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["phone_number"]) }}
-              </td>
-              <td
-                v-if="emergency_name_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["emergency_name"]) }}
-              </td>
-              <td
-                v-if="emergency_number_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["emergency_number"]) }}
-              </td>
-              <td
-                v-if="church_name_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["church_name"]) }}
-              </td>
-              <td
-                v-if="church_code_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["church_code"]) }}
-              </td>
-              <td
-                v-if="youth_leader_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["youth_leader"]) }}
-              </td>
-              <td
-                v-if="youth_number_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["youth_number"]) }}
-              </td>
-              <td
-                v-if="leader_email_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["leader_email"]) }}
-              </td>
-              <td
-                v-if="shirt_size_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["shirt_size"]) }}
-              </td>
-              <td
-                v-if="graduating_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["graduating"]) }}
-              </td>
-              <td
-                v-if="launch_conf_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["launch_conf"]) }}
-              </td>
-              <td
-                v-if="swimming_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["swimming"]) }}
-              </td>
-              <td
-                v-if="allergies_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["allergies"]) }}
-              </td>
-              <td
-                v-if="allergies_info_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["allergies_info"]) }}
-              </td>
-              <td
-                v-if="medication_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["medication"]) }}
-              </td>
-              <td
-                v-if="medication_info_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["medication_info"]) }}
-              </td>
-              <td
-                v-if="eyu_cap_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["eyu_cap"]) }}
-              </td>
-              <td
-                v-if="bw_25_shirt_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["bw_25_shirt"]) }}
-              </td>
-              <td
-                v-if="bw_25_shirt_size_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["bw_25_shirt_size"]) }}
-              </td>
-              <td
-                v-if="online_payment_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["online_payment"]) }}
-              </td>
-              <td
-                v-if="acknowledgement_column"
-                class="border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["acknowledgement"]) }}
-              </td>
-              <td
-                v-if="paid_column"
-                :class="row['paid'] ? 'bg-green-900' : 'bg-red-900'"
-                class="drop-shadow-lg drop-shadow-black z-10 sticky right-0 text-white border-b border-r p-2 text-nowrap"
-              >
-                {{ readableValue(row["paid"]) }}
-              </td>
-              <!-- <td v-for="field, idx in row" class="border-b border-r p-2 text-nowrap">
-                {{
-                    field === true
-                    ? "yes"
-                    : field === false
-                    ? "no"
-                    : field === undefined || field == null
-                    ? "-"
-                    : field
-                }}
-                </td> -->
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
+
 </template>
 
 <style scoped lang="scss"></style>
