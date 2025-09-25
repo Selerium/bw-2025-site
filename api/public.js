@@ -32,6 +32,6 @@ export default async function handler(req, res) {
   return res.status(405).json({
     error: true,
     title: "Invalid API call.",
-    message: "Something went wrong.",
+    message: "Something went wrong. Please try again later.",
   });
 }

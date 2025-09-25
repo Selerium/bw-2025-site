@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Nav from "./Nav.vue";
 import TextInput from "./form/TextInput.vue";
 import DropdownInput from "./form/DropdownInput.vue";
@@ -10,7 +10,7 @@ import VueCountdown from "@chenfengyuan/vue-countdown";
 import Toaster from "./Toaster.vue";
 
 const today = new Date();
-const registrationDay = new Date('2025-08-07T20:00:00Z')
+const registrationDay = new Date("2025-08-07T20:00:00Z");
 const timeLeft = registrationDay.valueOf() - today.valueOf();
 const registrationOpen = timeLeft > 0 ? false : true;
 const activeImage = ref<number>(0);
@@ -52,6 +52,7 @@ const toasterVisible = ref<boolean>(false);
 const toasterTitle = ref<string>("Title");
 const toasterDescription = ref<string>("Description");
 const disableRegister = ref<boolean>(false);
+const maxStudentsReached = ref<boolean>(false);
 
 const countryList = [
   "Afghanistan",
@@ -315,8 +316,10 @@ function changeActiveImage(left: boolean) {
 }
 
 async function handleSubmit() {
-  console.log(`parent email: ${parentEmailAddress.value}`)
-  console.log(`leader email: ${leaderEmail.value}`)
+  if (maxStudentsReached.value && role.value != 'leader') {
+    enableToaster(true, 'Max Students Registered', 'Apologies, all open slots are currently filled :(');
+    return;
+  }
 
   disableRegister.value = true;
   if (fullName.value == undefined) errorText.value = "Please enter full name";
@@ -430,7 +433,7 @@ async function handleSubmit() {
   disableRegister.value = false;
 
   if (onlinePayment.value) {
-    window.location.href = data['data']['url'];
+    window.location.href = data["data"]["url"];
   }
 }
 
@@ -445,6 +448,30 @@ function enableToaster(error: boolean, title: string, description: string) {
     toasterVisible.value = false;
   }, 5000);
 }
+
+onMounted(async () => {
+  let data = await fetch("/api/public", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const records = await data.json();
+  const students = records.filter((record: any) => record.role != 'leader')
+  const leaders = records.filter((record: any) => record.role == 'leader')
+  console.log(students.length);
+  console.log(leaders.length);
+  if (students.length >= 240) {
+    maxStudentsReached.value = true;
+    enableToaster(true, 'Max Students Registered', 'Apologies, all open slots are currently filled :(');
+  }
+  else if (students.error) {
+    disableRegister.value = true;
+    errorText.value = 'Error pulling data. Please try again after sometime.'
+    enableToaster(students.error, students.title, students.message);
+  }
+});
 </script>
 
 <template>
@@ -657,8 +684,7 @@ function enableToaster(error: boolean, title: string, description: string) {
       </h1>
       <p v-if="registrationOpen">
         Price per head:
-        <strong
-          >
+        <strong>
           560
           <svg
             version="1.2"
@@ -762,8 +788,13 @@ function enableToaster(error: boolean, title: string, description: string) {
         :error="role == undefined"
       />
       <div class="rounded-lg border p-4 flex flex-col gap-2">
-        <p class="font-semibold text-secondary">IMPORTANT NOTE REGARDING ROLES</p>
-        <p class="w-full text-left">The age categories are calculated based on your age as of <strong>October 1, 2025</strong>:</p>
+        <p class="font-semibold text-secondary">
+          IMPORTANT NOTE REGARDING ROLES
+        </p>
+        <p class="w-full text-left">
+          The age categories are calculated based on your age as of
+          <strong>October 1, 2025</strong>:
+        </p>
         <p class="w-full text-left">
           - Junior Students <strong>12-15 years</strong>
         </p>
@@ -774,7 +805,10 @@ function enableToaster(error: boolean, title: string, description: string) {
           - Leaders <strong>depending on your church</strong>
         </p>
         <p class="w-full text-left">
-          Leaders are asked to <strong>confirm with your respective churches</strong> before signing up for Big Weekend. Please talk with your leadership team before signing up for your church.
+          Leaders are asked to
+          <strong>confirm with your respective churches</strong> before signing
+          up for Big Weekend. Please talk with your leadership team before
+          signing up for your church.
         </p>
       </div>
       <div class="h-[1px] w-full rounded-lg bg-gray-300 my-2"></div>
@@ -786,22 +820,22 @@ function enableToaster(error: boolean, title: string, description: string) {
       :error="churchCode == undefined"
       /> -->
       <TextInput
-      v-model="leaderName"
-      :title="'Youth Group Leader Name'"
-      :placeholder="'Enter leader\'s name'"
-      :error="leaderName == undefined"
+        v-model="leaderName"
+        :title="'Youth Group Leader Name'"
+        :placeholder="'Enter leader\'s name'"
+        :error="leaderName == undefined"
       />
       <TextInput
-      v-model="leaderNumber"
-      :title="'Youth Group Leader Contact'"
-      :placeholder="'Enter leader\'s number'"
-      :error="leaderNumber == undefined"
+        v-model="leaderNumber"
+        :title="'Youth Group Leader Contact'"
+        :placeholder="'Enter leader\'s number'"
+        :error="leaderNumber == undefined"
       />
       <TextInput
-      v-model="leaderEmail"
-      :title="'Youth Group Leader Email'"
-      :placeholder="'Enter leader\'s email'"
-      :error="leaderEmail == undefined"
+        v-model="leaderEmail"
+        :title="'Youth Group Leader Email'"
+        :placeholder="'Enter leader\'s email'"
+        :error="leaderEmail == undefined"
       />
       <TextInput
         v-model="churchName"
@@ -881,7 +915,12 @@ function enableToaster(error: boolean, title: string, description: string) {
         merchandise prior to the event. Merchandise must be paid for during
         registration payment and can be collected at the event.
       </p>
-      <CheckboxInput v-model="eyuCap" :use-image="true" :title="'EYU Cap (50 AED)'" :image-src="'/eyu-cap.png'" />
+      <CheckboxInput
+        v-model="eyuCap"
+        :use-image="true"
+        :title="'EYU Cap (50 AED)'"
+        :image-src="'/eyu-cap.png'"
+      />
       <CheckboxInput
         v-model="bw25LimitedShirt"
         :use-image="true"
@@ -905,18 +944,27 @@ function enableToaster(error: boolean, title: string, description: string) {
         >
       </p>
       <div class="rounded-lg border p-4 flex flex-col gap-2">
-        <p class="font-semibold text-secondary">IMPORTANT NOTE REGARDING PAYMENTS:</p>
-        <p class="w-full text-left">
-          - For students/leaders paying by themselves to book their seat, please click <strong>"Online Payment"</strong>.
+        <p class="font-semibold text-secondary">
+          IMPORTANT NOTE REGARDING PAYMENTS:
         </p>
         <p class="w-full text-left">
-          - If your church is sponsoring your payment, please click the <strong>"Scholarship"</strong> option and we'll communicate with your church and leader to process and book your seat.
+          - For students/leaders paying by themselves to book their seat, please
+          click <strong>"Online Payment"</strong>.
         </p>
         <p class="w-full text-left">
-          - If your payment is cancelled or has any issue, you will have to redo the form in order to create a new payment link and pay online (apologies for the inconvenience with that).
+          - If your church is sponsoring your payment, please click the
+          <strong>"Scholarship"</strong> option and we'll communicate with your
+          church and leader to process and book your seat.
         </p>
         <p class="w-full text-left">
-          <strong>PLEASE NOTE:</strong> your seat is not confirmed until payment has been made. As there are limited seats, preference will be given on a first-come, first-serve basis.
+          - If your payment is cancelled or has any issue, you will have to redo
+          the form in order to create a new payment link and pay online
+          (apologies for the inconvenience with that).
+        </p>
+        <p class="w-full text-left">
+          <strong>PLEASE NOTE:</strong> your seat is not confirmed until payment
+          has been made. As there are limited seats, preference will be given on
+          a first-come, first-serve basis.
         </p>
       </div>
       <div class="flex gap-2">
@@ -952,10 +1000,10 @@ function enableToaster(error: boolean, title: string, description: string) {
       <button
         type="submit"
         @click="handleSubmit"
-        :disabled="disableRegister"
+        :disabled="disableRegister || (maxStudentsReached && role != 'leader')"
         class="disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed cursor-pointer bg-secondary text-white rounded-lg pt-2 pb-1 px-4 font-semibold"
       >
-        {{ onlinePayment ? 'Register & Pay' : 'Register' }}
+        {{ onlinePayment ? "Register & Pay" : "Register" }}
       </button>
       <p class="font-semibold text-center text-red-900 pt-2">{{ errorText }}</p>
     </form>
