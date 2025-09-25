@@ -459,10 +459,10 @@ onMounted(async () => {
 
   const students = await data.json();
   console.log(students);
-  if (students.error || students.length >= 230)
-    maxStudentsReached.value = true;
-  if (students.error)
-    enableToaster(students.error, students.title, students.message);
+  // if (students.error || students.length >= 230)
+  //   maxStudentsReached.value = true;
+  // if (students.error)
+  //   enableToaster(students.error, students.title, students.message);
 });
 </script>
 
