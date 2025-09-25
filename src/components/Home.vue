@@ -463,10 +463,10 @@ onMounted(async () => {
   const students = records.filter((record: any) => record.role != 'leader')
   console.log(students);
   console.log(students.length);
-  // if (students.error || students.length >= 230)
-  //   maxStudentsReached.value = true;
-  // if (students.error)
-  //   enableToaster(students.error, students.title, students.message);
+  if (students.error || students.length >= 230)
+    maxStudentsReached.value = true;
+  if (students.error)
+    enableToaster(students.error, students.title, students.message);
 });
 </script>
 
