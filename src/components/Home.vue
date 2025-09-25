@@ -462,13 +462,12 @@ onMounted(async () => {
   const leaders = records.filter((record: any) => record.role == 'leader')
   console.log(students.length);
   console.log(leaders.length);
-  if (students.length >= 230) {
+  if (students.length >= 240) {
     maxStudentsReached.value = true;
-    errorText.value = 'We are currently at max capacity for student registrations.'
     enableToaster(true, 'Max Students Registered', 'Apologies, all open slots are currently filled :(');
   }
   else if (students.error) {
-    maxStudentsReached.value = true;
+    disableRegister.value = true;
     errorText.value = 'Error pulling data. Please try again after sometime.'
     enableToaster(students.error, students.title, students.message);
   }
