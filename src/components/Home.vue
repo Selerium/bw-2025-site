@@ -457,8 +457,12 @@ onMounted(async () => {
     },
   });
 
-  const students = await data.json();
+  const records = await data.json();
+  console.log(records);
+  console.log(records.length);
+  const students = records.filter((record: any) => record.role != 'leader')
   console.log(students);
+  console.log(students.length);
   // if (students.error || students.length >= 230)
   //   maxStudentsReached.value = true;
   // if (students.error)
