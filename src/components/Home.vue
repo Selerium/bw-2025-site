@@ -449,7 +449,7 @@ function enableToaster(error: boolean, title: string, description: string) {
   }, 5000);
 }
 
-onMounted(() => {
+onMounted(async () => {
   let data = await fetch("/api/total-students", {
     method: "GET",
     headers: {
