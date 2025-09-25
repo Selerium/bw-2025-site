@@ -458,15 +458,20 @@ onMounted(async () => {
   });
 
   const records = await data.json();
-  console.log(records);
-  console.log(records.length);
   const students = records.filter((record: any) => record.role != 'leader')
-  console.log(students);
+  const leaders = records.filter((record: any) => record.role == 'leader')
   console.log(students.length);
-  if (students.error || students.length >= 230)
+  console.log(leaders.length);
+  if (students.length >= 230) {
     maxStudentsReached.value = true;
-  if (students.error)
+    errorText.value = 'We are currently at max capacity for student registrations.'
+    enableToaster(true, 'Max Students Registered', 'Apologies, all open slots are currently filled :(');
+  }
+  else if (students.error) {
+    maxStudentsReached.value = true;
+    errorText.value = 'Error pulling data. Please try again after sometime.'
     enableToaster(students.error, students.title, students.message);
+  }
 });
 </script>
 
