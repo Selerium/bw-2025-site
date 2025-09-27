@@ -53,6 +53,7 @@ const toasterTitle = ref<string>("Title");
 const toasterDescription = ref<string>("Description");
 const disableRegister = ref<boolean>(false);
 const maxStudentsReached = ref<boolean>(false);
+const maxLeadersReached = ref<boolean>(false);
 
 const countryList = [
   "Afghanistan",
@@ -462,9 +463,19 @@ onMounted(async () => {
   const leaders = records.filter((record: any) => record.role == 'leader')
   console.log(students.length);
   console.log(leaders.length);
-  if (students.length >= 240) {
+  
+  if (students.length >= 240 && leaders.length >= 60) {
+    maxStudentsReached.value = true;
+    maxLeadersReached.value = true;
+    enableToaster(true, 'Max Registrations Reached', 'Apologies all open slots are currently filled :(');
+  }
+  else if (students.length >= 240) {
     maxStudentsReached.value = true;
     enableToaster(true, 'Max Students Registered', 'Apologies, all open slots are currently filled :(');
+  }
+  else if (leaders.length >= 60) {
+    maxLeadersReached.value = true;
+    enableToaster(true, 'Max Leaders Registered', 'Apologies all open slots are currently filled :(');
   }
   else if (students.error) {
     disableRegister.value = true;
