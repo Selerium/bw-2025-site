@@ -477,10 +477,10 @@ onMounted(async () => {
     maxLeadersReached.value = true;
     enableToaster(true, 'Max Leaders Registered', 'Apologies all open slots are currently filled :(');
   }
-  else if (students.error) {
+  else if (records.error) {
     disableRegister.value = true;
     errorText.value = 'Error pulling data. Please try again after sometime.'
-    enableToaster(students.error, students.title, students.message);
+    enableToaster(records.error, records.title, records.message);
   }
 });
 </script>
@@ -1011,7 +1011,7 @@ onMounted(async () => {
       <button
         type="submit"
         @click="handleSubmit"
-        :disabled="disableRegister || (maxStudentsReached && role != 'leader')"
+        :disabled="disableRegister || (role != 'leader' && maxStudentsReached) || (role == 'leader' && maxLeadersReached)"
         class="disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed cursor-pointer bg-secondary text-white rounded-lg pt-2 pb-1 px-4 font-semibold"
       >
         {{ onlinePayment ? "Register & Pay" : "Register" }}
@@ -1019,7 +1019,7 @@ onMounted(async () => {
       <p class="font-semibold text-center text-red-900 pt-2">{{ errorText }}</p>
     </form>
 
-    <div v-else="!registrationOpen">
+    <div v-if="!registrationOpen">
       <vue-countdown
         :time="timeLeft"
         v-slot="{ days, hours, minutes, seconds }"
