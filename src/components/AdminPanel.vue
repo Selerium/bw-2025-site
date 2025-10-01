@@ -5,363 +5,366 @@ import { computed } from "@vue/reactivity";
 import { supabase } from "../lib/supabaseClient";
 import DropdownInput from "./form/DropdownInput.vue";
 
-const sampleRecords = [
-  {
-    id: "USR001",
-    created_at: "2025-09-15T10:23:00Z",
-    full_name: "Emily Johnson",
-    gender: "Female",
-    date_of_birth: "2007-03-12",
-    age: "18",
-    role: "Participant",
-    nationality: "American",
-    id_number: "A123456789",
-    parent_email: "susan.johnson@example.com",
-    email: "emily.johnson@example.com",
-    phone_number: "+1-555-324-9876",
-    emergency_name: "Michael Johnson",
-    emergency_number: "+1-555-201-4433",
-    church_name: "Grace Community Church",
-    church_code: "GCC-102",
-    youth_leader: "Pastor Daniel Smith",
-    youth_number: "+1-555-765-3344",
-    leader_email: "daniel.smith@gcc.org",
-    shirt_size: "M",
-    graduating: "Yes",
-    launch_conf: "Yes",
-    swimming: "Yes",
-    allergies: "No",
-    allergies_info: "",
-    medication: "No",
-    medication_info: "",
-    eyu_cap: "Yes",
-    bw_25_shirt: "Yes",
-    bw_25_shirt_size: "M",
-    online_payment: "Yes",
-    acknowledgement: "Yes",
-    paid: true,
-  },
-  {
-    id: "USR002",
-    created_at: "2025-09-16T14:55:30Z",
-    full_name: "Joshua Martinez",
-    gender: "Male",
-    date_of_birth: "2008-11-25",
-    age: "16",
-    role: "Participant",
-    nationality: "Mexican",
-    id_number: "MEX9023345",
-    parent_email: "luis.martinez@example.com",
-    email: "joshua.martinez@example.com",
-    phone_number: "+52-55-8723-1144",
-    emergency_name: "Laura Martinez",
-    emergency_number: "+52-55-8723-2290",
-    church_name: "Iglesia Nueva Vida",
-    church_code: "INV-210",
-    youth_leader: "Maria Lopez",
-    youth_number: "+52-55-8723-1188",
-    leader_email: "maria.lopez@inv.org",
-    shirt_size: "L",
-    graduating: "No",
-    launch_conf: "Yes",
-    swimming: "No",
-    allergies: "Yes",
-    allergies_info: "Peanuts",
-    medication: "Yes",
-    medication_info: "Asthma inhaler",
-    eyu_cap: "No",
-    bw_25_shirt: "Yes",
-    bw_25_shirt_size: "L",
-    online_payment: "No",
-    acknowledgement: "Yes",
-    paid: false,
-  },
-  {
-    id: "USR003",
-    created_at: "2025-09-17T09:10:45Z",
-    full_name: "Sophia Kim",
-    gender: "Female",
-    date_of_birth: "2006-07-05",
-    age: "19",
-    role: "Leader",
-    nationality: "South Korean",
-    id_number: "KR200678912",
-    parent_email: "min.park@example.com",
-    email: "sophia.kim@example.com",
-    phone_number: "+82-10-4432-7788",
-    emergency_name: "Min Park",
-    emergency_number: "+82-10-4422-1199",
-    church_name: "Seoul Central Church",
-    church_code: "SCC-555",
-    youth_leader: "Rev. Han Lee",
-    youth_number: "+82-10-5533-2211",
-    leader_email: "han.lee@scc.org",
-    shirt_size: "S",
-    graduating: "Yes",
-    launch_conf: "No",
-    swimming: "Yes",
-    allergies: "Yes",
-    allergies_info: "Seafood",
-    medication: "No",
-    medication_info: "",
-    eyu_cap: "Yes",
-    bw_25_shirt: "No",
-    bw_25_shirt_size: "",
-    online_payment: "Yes",
-    acknowledgement: "Yes",
-    paid: true,
-  },
-  {
-    id: "USR003",
-    created_at: "2025-09-17T09:10:45Z",
-    full_name: "Sophia Kim",
-    gender: "Female",
-    date_of_birth: "2006-07-05",
-    age: "19",
-    role: "Leader",
-    nationality: "South Korean",
-    id_number: "KR200678912",
-    parent_email: "min.park@example.com",
-    email: "sophia.kim@example.com",
-    phone_number: "+82-10-4432-7788",
-    emergency_name: "Min Park",
-    emergency_number: "+82-10-4422-1199",
-    church_name: "Seoul Central Church",
-    church_code: "SCC-555",
-    youth_leader: "Rev. Han Lee",
-    youth_number: "+82-10-5533-2211",
-    leader_email: "han.lee@scc.org",
-    shirt_size: "S",
-    graduating: "Yes",
-    launch_conf: "No",
-    swimming: "Yes",
-    allergies: "Yes",
-    allergies_info: "Seafood",
-    medication: "No",
-    medication_info: "",
-    eyu_cap: "Yes",
-    bw_25_shirt: "No",
-    bw_25_shirt_size: "",
-    online_payment: "Yes",
-    acknowledgement: "Yes",
-    paid: true,
-  },
-  {
-    id: "USR003",
-    created_at: "2025-09-17T09:10:45Z",
-    full_name: "Sophia Kim",
-    gender: "Female",
-    date_of_birth: "2006-07-05",
-    age: "19",
-    role: "Leader",
-    nationality: "South Korean",
-    id_number: "KR200678912",
-    parent_email: "min.park@example.com",
-    email: "sophia.kim@example.com",
-    phone_number: "+82-10-4432-7788",
-    emergency_name: "Min Park",
-    emergency_number: "+82-10-4422-1199",
-    church_name: "Seoul Central Church",
-    church_code: "SCC-555",
-    youth_leader: "Rev. Han Lee",
-    youth_number: "+82-10-5533-2211",
-    leader_email: "han.lee@scc.org",
-    shirt_size: "S",
-    graduating: "Yes",
-    launch_conf: "No",
-    swimming: "Yes",
-    allergies: "Yes",
-    allergies_info: "Seafood",
-    medication: "No",
-    medication_info: "",
-    eyu_cap: "Yes",
-    bw_25_shirt: "No",
-    bw_25_shirt_size: "",
-    online_payment: "Yes",
-    acknowledgement: "Yes",
-    paid: true,
-  },
-  {
-    id: "USR003",
-    created_at: "2025-09-17T09:10:45Z",
-    full_name: "Sophia Kim",
-    gender: "Female",
-    date_of_birth: "2006-07-05",
-    age: "19",
-    role: "Leader",
-    nationality: "South Korean",
-    id_number: "KR200678912",
-    parent_email: "min.park@example.com",
-    email: "sophia.kim@example.com",
-    phone_number: "+82-10-4432-7788",
-    emergency_name: "Min Park",
-    emergency_number: "+82-10-4422-1199",
-    church_name: "Seoul Central Church",
-    church_code: "SCC-555",
-    youth_leader: "Rev. Han Lee",
-    youth_number: "+82-10-5533-2211",
-    leader_email: "han.lee@scc.org",
-    shirt_size: "S",
-    graduating: "Yes",
-    launch_conf: "No",
-    swimming: "Yes",
-    allergies: "Yes",
-    allergies_info: "Seafood",
-    medication: "No",
-    medication_info: "",
-    eyu_cap: "Yes",
-    bw_25_shirt: "No",
-    bw_25_shirt_size: "",
-    online_payment: "Yes",
-    acknowledgement: "Yes",
-    paid: true,
-  },
-  {
-    id: "USR003",
-    created_at: "2025-09-17T09:10:45Z",
-    full_name: "Sophia Kim",
-    gender: "Female",
-    date_of_birth: "2006-07-05",
-    age: "19",
-    role: "Leader",
-    nationality: "South Korean",
-    id_number: "KR200678912",
-    parent_email: "min.park@example.com",
-    email: "sophia.kim@example.com",
-    phone_number: "+82-10-4432-7788",
-    emergency_name: "Min Park",
-    emergency_number: "+82-10-4422-1199",
-    church_name: "Seoul Central Church",
-    church_code: "SCC-555",
-    youth_leader: "Rev. Han Lee",
-    youth_number: "+82-10-5533-2211",
-    leader_email: "han.lee@scc.org",
-    shirt_size: "S",
-    graduating: "Yes",
-    launch_conf: "No",
-    swimming: "Yes",
-    allergies: "Yes",
-    allergies_info: "Seafood",
-    medication: "No",
-    medication_info: "",
-    eyu_cap: "Yes",
-    bw_25_shirt: "No",
-    bw_25_shirt_size: "",
-    online_payment: "Yes",
-    acknowledgement: "Yes",
-    paid: true,
-  },
-  {
-    id: "USR003",
-    created_at: "2025-09-17T09:10:45Z",
-    full_name: "Sophia Kim",
-    gender: "Female",
-    date_of_birth: "2006-07-05",
-    age: "19",
-    role: "Leader",
-    nationality: "South Korean",
-    id_number: "KR200678912",
-    parent_email: "min.park@example.com",
-    email: "sophia.kim@example.com",
-    phone_number: "+82-10-4432-7788",
-    emergency_name: "Min Park",
-    emergency_number: "+82-10-4422-1199",
-    church_name: "Seoul Central Church",
-    church_code: "SCC-555",
-    youth_leader: "Rev. Han Lee",
-    youth_number: "+82-10-5533-2211",
-    leader_email: "han.lee@scc.org",
-    shirt_size: "S",
-    graduating: "Yes",
-    launch_conf: "No",
-    swimming: "Yes",
-    allergies: "Yes",
-    allergies_info: "Seafood",
-    medication: "No",
-    medication_info: "",
-    eyu_cap: "Yes",
-    bw_25_shirt: "No",
-    bw_25_shirt_size: "",
-    online_payment: "Yes",
-    acknowledgement: "Yes",
-    paid: true,
-  },
-  {
-    id: "USR003",
-    created_at: "2025-09-17T09:10:45Z",
-    full_name: "Sophia Kim",
-    gender: "Female",
-    date_of_birth: "2006-07-05",
-    age: "19",
-    role: "Leader",
-    nationality: "South Korean",
-    id_number: "KR200678912",
-    parent_email: "min.park@example.com",
-    email: "sophia.kim@example.com",
-    phone_number: "+82-10-4432-7788",
-    emergency_name: "Min Park",
-    emergency_number: "+82-10-4422-1199",
-    church_name: "Seoul Central Church",
-    church_code: "SCC-555",
-    youth_leader: "Rev. Han Lee",
-    youth_number: "+82-10-5533-2211",
-    leader_email: "han.lee@scc.org",
-    shirt_size: "S",
-    graduating: "Yes",
-    launch_conf: "No",
-    swimming: "Yes",
-    allergies: "Yes",
-    allergies_info: "Seafood",
-    medication: "No",
-    medication_info: "",
-    eyu_cap: "Yes",
-    bw_25_shirt: "No",
-    bw_25_shirt_size: "",
-    online_payment: "Yes",
-    acknowledgement: "Yes",
-    paid: true,
-  },
-  {
-    id: "USR003",
-    created_at: "2025-09-17T09:10:45Z",
-    full_name: "Sophia Kim",
-    gender: "Female",
-    date_of_birth: "2006-07-05",
-    age: "19",
-    role: "Leader",
-    nationality: "South Korean",
-    id_number: "KR200678912",
-    parent_email: "min.park@example.com",
-    email: "sophia.kim@example.com",
-    phone_number: "+82-10-4432-7788",
-    emergency_name: "Min Park",
-    emergency_number: "+82-10-4422-1199",
-    church_name: "Seoul Central Church",
-    church_code: "SCC-555",
-    youth_leader: "Rev. Han Lee",
-    youth_number: "+82-10-5533-2211",
-    leader_email: "han.lee@scc.org",
-    shirt_size: "S",
-    graduating: "Yes",
-    launch_conf: "No",
-    swimming: "Yes",
-    allergies: "Yes",
-    allergies_info: "Seafood",
-    medication: "No",
-    medication_info: "",
-    eyu_cap: "Yes",
-    bw_25_shirt: "No",
-    bw_25_shirt_size: "",
-    online_payment: "Yes",
-    acknowledgement: "Yes",
-    paid: true,
-  },
-];
+// const sampleRecords = [
+//   {
+//     id: "USR001",
+//     created_at: "2025-09-15T10:23:00Z",
+//     full_name: "Emily Johnson",
+//     gender: "Female",
+//     date_of_birth: "2007-03-12",
+//     age: "18",
+//     role: "Participant",
+//     nationality: "American",
+//     id_number: "A123456789",
+//     parent_email: "susan.johnson@example.com",
+//     email: "emily.johnson@example.com",
+//     phone_number: "+1-555-324-9876",
+//     emergency_name: "Michael Johnson",
+//     emergency_number: "+1-555-201-4433",
+//     church_name: "Grace Community Church",
+//     church_code: "GCC-102",
+//     youth_leader: "Pastor Daniel Smith",
+//     youth_number: "+1-555-765-3344",
+//     leader_email: "daniel.smith@gcc.org",
+//     shirt_size: "M",
+//     graduating: "Yes",
+//     launch_conf: "Yes",
+//     swimming: "Yes",
+//     allergies: "No",
+//     allergies_info: "",
+//     medication: "No",
+//     medication_info: "",
+//     eyu_cap: "Yes",
+//     bw_25_shirt: "Yes",
+//     bw_25_shirt_size: "M",
+//     online_payment: "Yes",
+//     acknowledgement: "Yes",
+//     paid: true,
+//   },
+//   {
+//     id: "USR002",
+//     created_at: "2025-09-16T14:55:30Z",
+//     full_name: "Joshua Martinez",
+//     gender: "Male",
+//     date_of_birth: "2008-11-25",
+//     age: "16",
+//     role: "Participant",
+//     nationality: "Mexican",
+//     id_number: "MEX9023345",
+//     parent_email: "luis.martinez@example.com",
+//     email: "joshua.martinez@example.com",
+//     phone_number: "+52-55-8723-1144",
+//     emergency_name: "Laura Martinez",
+//     emergency_number: "+52-55-8723-2290",
+//     church_name: "Iglesia Nueva Vida",
+//     church_code: "INV-210",
+//     youth_leader: "Maria Lopez",
+//     youth_number: "+52-55-8723-1188",
+//     leader_email: "maria.lopez@inv.org",
+//     shirt_size: "L",
+//     graduating: "No",
+//     launch_conf: "Yes",
+//     swimming: "No",
+//     allergies: "Yes",
+//     allergies_info: "Peanuts",
+//     medication: "Yes",
+//     medication_info: "Asthma inhaler",
+//     eyu_cap: "No",
+//     bw_25_shirt: "Yes",
+//     bw_25_shirt_size: "L",
+//     online_payment: "No",
+//     acknowledgement: "Yes",
+//     paid: false,
+//   },
+//   {
+//     id: "USR003",
+//     created_at: "2025-09-17T09:10:45Z",
+//     full_name: "Sophia Kim",
+//     gender: "Female",
+//     date_of_birth: "2006-07-05",
+//     age: "19",
+//     role: "Leader",
+//     nationality: "South Korean",
+//     id_number: "KR200678912",
+//     parent_email: "min.park@example.com",
+//     email: "sophia.kim@example.com",
+//     phone_number: "+82-10-4432-7788",
+//     emergency_name: "Min Park",
+//     emergency_number: "+82-10-4422-1199",
+//     church_name: "Seoul Central Church",
+//     church_code: "SCC-555",
+//     youth_leader: "Rev. Han Lee",
+//     youth_number: "+82-10-5533-2211",
+//     leader_email: "han.lee@scc.org",
+//     shirt_size: "S",
+//     graduating: "Yes",
+//     launch_conf: "No",
+//     swimming: "Yes",
+//     allergies: "Yes",
+//     allergies_info: "Seafood",
+//     medication: "No",
+//     medication_info: "",
+//     eyu_cap: "Yes",
+//     bw_25_shirt: "No",
+//     bw_25_shirt_size: "",
+//     online_payment: "Yes",
+//     acknowledgement: "Yes",
+//     paid: true,
+//   },
+//   {
+//     id: "USR003",
+//     created_at: "2025-09-17T09:10:45Z",
+//     full_name: "Sophia Kim",
+//     gender: "Female",
+//     date_of_birth: "2006-07-05",
+//     age: "19",
+//     role: "Leader",
+//     nationality: "South Korean",
+//     id_number: "KR200678912",
+//     parent_email: "min.park@example.com",
+//     email: "sophia.kim@example.com",
+//     phone_number: "+82-10-4432-7788",
+//     emergency_name: "Min Park",
+//     emergency_number: "+82-10-4422-1199",
+//     church_name: "Seoul Central Church",
+//     church_code: "SCC-555",
+//     youth_leader: "Rev. Han Lee",
+//     youth_number: "+82-10-5533-2211",
+//     leader_email: "han.lee@scc.org",
+//     shirt_size: "S",
+//     graduating: "Yes",
+//     launch_conf: "No",
+//     swimming: "Yes",
+//     allergies: "Yes",
+//     allergies_info: "Seafood",
+//     medication: "No",
+//     medication_info: "",
+//     eyu_cap: "Yes",
+//     bw_25_shirt: "No",
+//     bw_25_shirt_size: "",
+//     online_payment: "Yes",
+//     acknowledgement: "Yes",
+//     paid: true,
+//   },
+//   {
+//     id: "USR003",
+//     created_at: "2025-09-17T09:10:45Z",
+//     full_name: "Sophia Kim",
+//     gender: "Female",
+//     date_of_birth: "2006-07-05",
+//     age: "19",
+//     role: "Leader",
+//     nationality: "South Korean",
+//     id_number: "KR200678912",
+//     parent_email: "min.park@example.com",
+//     email: "sophia.kim@example.com",
+//     phone_number: "+82-10-4432-7788",
+//     emergency_name: "Min Park",
+//     emergency_number: "+82-10-4422-1199",
+//     church_name: "Seoul Central Church",
+//     church_code: "SCC-555",
+//     youth_leader: "Rev. Han Lee",
+//     youth_number: "+82-10-5533-2211",
+//     leader_email: "han.lee@scc.org",
+//     shirt_size: "S",
+//     graduating: "Yes",
+//     launch_conf: "No",
+//     swimming: "Yes",
+//     allergies: "Yes",
+//     allergies_info: "Seafood",
+//     medication: "No",
+//     medication_info: "",
+//     eyu_cap: "Yes",
+//     bw_25_shirt: "No",
+//     bw_25_shirt_size: "",
+//     online_payment: "Yes",
+//     acknowledgement: "Yes",
+//     paid: true,
+//   },
+//   {
+//     id: "USR003",
+//     created_at: "2025-09-17T09:10:45Z",
+//     full_name: "Sophia Kim",
+//     gender: "Female",
+//     date_of_birth: "2006-07-05",
+//     age: "19",
+//     role: "Leader",
+//     nationality: "South Korean",
+//     id_number: "KR200678912",
+//     parent_email: "min.park@example.com",
+//     email: "sophia.kim@example.com",
+//     phone_number: "+82-10-4432-7788",
+//     emergency_name: "Min Park",
+//     emergency_number: "+82-10-4422-1199",
+//     church_name: "Seoul Central Church",
+//     church_code: "SCC-555",
+//     youth_leader: "Rev. Han Lee",
+//     youth_number: "+82-10-5533-2211",
+//     leader_email: "han.lee@scc.org",
+//     shirt_size: "S",
+//     graduating: "Yes",
+//     launch_conf: "No",
+//     swimming: "Yes",
+//     allergies: "Yes",
+//     allergies_info: "Seafood",
+//     medication: "No",
+//     medication_info: "",
+//     eyu_cap: "Yes",
+//     bw_25_shirt: "No",
+//     bw_25_shirt_size: "",
+//     online_payment: "Yes",
+//     acknowledgement: "Yes",
+//     paid: true,
+//   },
+//   {
+//     id: "USR003",
+//     created_at: "2025-09-17T09:10:45Z",
+//     full_name: "Sophia Kim",
+//     gender: "Female",
+//     date_of_birth: "2006-07-05",
+//     age: "19",
+//     role: "Leader",
+//     nationality: "South Korean",
+//     id_number: "KR200678912",
+//     parent_email: "min.park@example.com",
+//     email: "sophia.kim@example.com",
+//     phone_number: "+82-10-4432-7788",
+//     emergency_name: "Min Park",
+//     emergency_number: "+82-10-4422-1199",
+//     church_name: "Seoul Central Church",
+//     church_code: "SCC-555",
+//     youth_leader: "Rev. Han Lee",
+//     youth_number: "+82-10-5533-2211",
+//     leader_email: "han.lee@scc.org",
+//     shirt_size: "S",
+//     graduating: "Yes",
+//     launch_conf: "No",
+//     swimming: "Yes",
+//     allergies: "Yes",
+//     allergies_info: "Seafood",
+//     medication: "No",
+//     medication_info: "",
+//     eyu_cap: "Yes",
+//     bw_25_shirt: "No",
+//     bw_25_shirt_size: "",
+//     online_payment: "Yes",
+//     acknowledgement: "Yes",
+//     paid: true,
+//   },
+//   {
+//     id: "USR003",
+//     created_at: "2025-09-17T09:10:45Z",
+//     full_name: "Sophia Kim",
+//     gender: "Female",
+//     date_of_birth: "2006-07-05",
+//     age: "19",
+//     role: "Leader",
+//     nationality: "South Korean",
+//     id_number: "KR200678912",
+//     parent_email: "min.park@example.com",
+//     email: "sophia.kim@example.com",
+//     phone_number: "+82-10-4432-7788",
+//     emergency_name: "Min Park",
+//     emergency_number: "+82-10-4422-1199",
+//     church_name: "Seoul Central Church",
+//     church_code: "SCC-555",
+//     youth_leader: "Rev. Han Lee",
+//     youth_number: "+82-10-5533-2211",
+//     leader_email: "han.lee@scc.org",
+//     shirt_size: "S",
+//     graduating: "Yes",
+//     launch_conf: "No",
+//     swimming: "Yes",
+//     allergies: "Yes",
+//     allergies_info: "Seafood",
+//     medication: "No",
+//     medication_info: "",
+//     eyu_cap: "Yes",
+//     bw_25_shirt: "No",
+//     bw_25_shirt_size: "",
+//     online_payment: "Yes",
+//     acknowledgement: "Yes",
+//     paid: true,
+//   },
+//   {
+//     id: "USR003",
+//     created_at: "2025-09-17T09:10:45Z",
+//     full_name: "Sophia Kim",
+//     gender: "Female",
+//     date_of_birth: "2006-07-05",
+//     age: "19",
+//     role: "Leader",
+//     nationality: "South Korean",
+//     id_number: "KR200678912",
+//     parent_email: "min.park@example.com",
+//     email: "sophia.kim@example.com",
+//     phone_number: "+82-10-4432-7788",
+//     emergency_name: "Min Park",
+//     emergency_number: "+82-10-4422-1199",
+//     church_name: "Seoul Central Church",
+//     church_code: "SCC-555",
+//     youth_leader: "Rev. Han Lee",
+//     youth_number: "+82-10-5533-2211",
+//     leader_email: "han.lee@scc.org",
+//     shirt_size: "S",
+//     graduating: "Yes",
+//     launch_conf: "No",
+//     swimming: "Yes",
+//     allergies: "Yes",
+//     allergies_info: "Seafood",
+//     medication: "No",
+//     medication_info: "",
+//     eyu_cap: "Yes",
+//     bw_25_shirt: "No",
+//     bw_25_shirt_size: "",
+//     online_payment: "Yes",
+//     acknowledgement: "Yes",
+//     paid: true,
+//   },
+//   {
+//     id: "USR003",
+//     created_at: "2025-09-17T09:10:45Z",
+//     full_name: "Sophia Kim",
+//     gender: "Female",
+//     date_of_birth: "2006-07-05",
+//     age: "19",
+//     role: "Leader",
+//     nationality: "South Korean",
+//     id_number: "KR200678912",
+//     parent_email: "min.park@example.com",
+//     email: "sophia.kim@example.com",
+//     phone_number: "+82-10-4432-7788",
+//     emergency_name: "Min Park",
+//     emergency_number: "+82-10-4422-1199",
+//     church_name: "Seoul Central Church",
+//     church_code: "SCC-555",
+//     youth_leader: "Rev. Han Lee",
+//     youth_number: "+82-10-5533-2211",
+//     leader_email: "han.lee@scc.org",
+//     shirt_size: "S",
+//     graduating: "Yes",
+//     launch_conf: "No",
+//     swimming: "Yes",
+//     allergies: "Yes",
+//     allergies_info: "Seafood",
+//     medication: "No",
+//     medication_info: "",
+//     eyu_cap: "Yes",
+//     bw_25_shirt: "No",
+//     bw_25_shirt_size: "",
+//     online_payment: "Yes",
+//     acknowledgement: "Yes",
+//     paid: true,
+//   },
+// ];
 
 const username = "arnoiscool";
 const password = "coolisarno";
 
 const currentChurch = ref<string>("YFC");
+const roleFilter = ref<"All" | "Leader" | "Student">("All");
+const churchFilter = ref<string>("All");
+
 const userSelected = ref<boolean>(false);
 const selectedUser = ref<{}>();
 const loggedIn = ref<boolean>(true);
@@ -369,103 +372,75 @@ const inputUsername = ref<string>();
 const inputPassword = ref<string>();
 const rows = ref([
   {
-    id: '',
-    created_at: '',
-    full_name: '',
-    gender: '',
-    date_of_birth: '',
-    age: '',
-    role: '',
-    nationality: '',
-    id_number: '',
-    parent_email: '',
-    email: '',
-    phone_number: '',
-    emergency_name: '',
-    emergency_number: '',
-    church_name: '',
-    church_code: '',
-    youth_leader: '',
-    youth_number: '',
-    leader_email: '',
-    shirt_size: '',
-    graduating: '',
-    launch_conf: '',
-    swimming: '',
+    id: "",
+    created_at: "",
+    full_name: "",
+    gender: "",
+    date_of_birth: "",
+    age: "",
+    role: "",
+    nationality: "",
+    id_number: "",
+    parent_email: "",
+    email: "",
+    phone_number: "",
+    emergency_name: "",
+    emergency_number: "",
+    church_name: "",
+    church_code: "",
+    youth_leader: "",
+    youth_number: "",
+    leader_email: "",
+    shirt_size: "",
+    graduating: "",
+    launch_conf: "",
+    swimming: "",
     allergies: false,
-    allergies_info: '',
+    allergies_info: "",
     medication: false,
-    medication_info: '',
-    eyu_cap: '',
-    bw_25_shirt: '',
-    bw_25_shirt_size: '',
-    online_payment: '',
-    acknowledgement: '',
+    medication_info: "",
+    eyu_cap: "",
+    bw_25_shirt: "",
+    bw_25_shirt_size: "",
+    online_payment: "",
+    acknowledgement: "",
     paid: false,
   },
 ]);
-// const showFilters = ref<boolean>(false);
-const searchText = ref<string>("");
-// const chosenColumn = ref("");
 
-// const ID_column = ref<boolean>(false);
-// const datetime_column = ref<boolean>(false);
-// const full_name_column = ref<boolean>(true);
-// const gender_column = ref<boolean>(true);
-// const date_of_birth_column = ref<boolean>(true);
-// const age_column = ref<boolean>(true);
-// const role_column = ref<boolean>(true);
-// const nationality_column = ref<boolean>(true);
-// const id_number_column = ref<boolean>(true);
-// const parent_email_column = ref<boolean>(true);
-// const email_column = ref<boolean>(true);
-// const phone_number_column = ref<boolean>(true);
-// const emergency_name_column = ref<boolean>(true);
-// const emergency_number_column = ref<boolean>(true);
-// const church_name_column = ref<boolean>(true);
-// const church_code_column = ref<boolean>(false);
-// const youth_leader_column = ref<boolean>(true);
-// const youth_number_column = ref<boolean>(true);
-// const leader_email_column = ref<boolean>(true);
-// const shirt_size_column = ref<boolean>(true);
-// const graduating_column = ref<boolean>(true);
-// const launch_conf_column = ref<boolean>(true);
-// const swimming_column = ref<boolean>(true);
-// const allergies_column = ref<boolean>(true);
-// const allergies_info_column = ref<boolean>(true);
-// const medication_column = ref<boolean>(true);
-// const medication_info_column = ref<boolean>(true);
-// const eyu_cap_column = ref<boolean>(true);
-// const bw_25_shirt_column = ref<boolean>(true);
-// const bw_25_shirt_size_column = ref<boolean>(true);
-// const online_payment_column = ref<boolean>(true);
-// const acknowledgement_column = ref<boolean>(false);
-// const paid_column = ref<boolean>(true);
+const searchText = ref<string>("");
 const church_names = ref<any>();
 const churches = ref<any>();
-// const showBreakup = ref<boolean>(false);
-// const showMasterList = ref<boolean>(true);
 
 const filteredRows = computed(() => {
-  console.log(searchText.value);
-  if (!searchText.value) return rows.value;
-
-  // if (!chosenColumn.value)
-    return rows.value.filter((row) =>
-      Object.values(row).some((field) =>
-        String(field).toLowerCase().includes(searchText.value.toLowerCase())
+  return rows.value
+    .filter((row) => {
+      if (
+        churchFilter.value.toLowerCase() != "all" &&
+        churchFilter.value.toLowerCase() != row.church_name.toLowerCase()
       )
-    );
-
-  // return rows.value.filter((row) =>
-  //   String(row[chosenColumn.value as keyof typeof row])
-  //     .toLowerCase()
-  //     .includes(searchText.value.toLowerCase())
-  // );
+        return false;
+      if (
+        roleFilter.value.toLowerCase() != "all" &&
+        (roleFilter.value.toLowerCase() == "leader"
+          ? row.role != "leader"
+          : row.role == "leader")
+      )
+        return false;
+      return row.full_name
+        .toLowerCase()
+        .includes(searchText.value.toLowerCase());
+    })
+    .sort((a, b) => {
+      return a.full_name.localeCompare(b.full_name);
+    });
 });
 
 async function checkLogIn() {
-  if (loggedIn.value == true || (inputUsername.value == username && inputPassword.value == password)) {
+  if (
+    loggedIn.value == true ||
+    (inputUsername.value == username && inputPassword.value == password)
+  ) {
     loggedIn.value = true;
 
     // let data = await fetch("/api/public", {
@@ -483,8 +458,7 @@ async function checkLogIn() {
       .select("*")
       .order("created_at");
 
-    if (error)
-      console.log(error);
+    if (error) console.log(error);
     if (data) rows.value = data;
 
     const counts: Record<
@@ -511,6 +485,19 @@ async function checkLogIn() {
             nonPaying: row["online_payment"] ? 0 : 1,
           };
       }
+      if (counts["All"])
+        counts["All"] = {
+          signups: counts["All"]["signups"] + 1,
+          paidSignups: counts["All"]["paidSignups"] + (row["paid"] ? 1 : 0),
+          nonPaying:
+            counts["All"]["nonPaying"] + (!row["online_payment"] ? 1 : 0),
+        };
+      else
+        counts["All"] = {
+          signups: 1,
+          paidSignups: row["paid"] ? 1 : 0,
+          nonPaying: !row["online_payment"] ? 1 : 0,
+        };
     });
 
     church_names.value = Object.entries(counts).map(([name, info]) => ({
@@ -518,23 +505,9 @@ async function checkLogIn() {
       info,
     }));
 
-    churches.value = church_names.value.map((item: any) => item.name);
+    churches.value = church_names.value.map((item: any) => item.name).sort();
   }
 }
-
-// function toggleFilters() {
-//   showFilters.value = !showFilters.value;
-// }
-
-// function readableValue(text: any) {
-//   return text === true
-//     ? "Yes"
-//     : text === false
-//     ? "No"
-//     : text === undefined || text == null
-//     ? "-"
-//     : text;
-// }
 
 function chooseUser(user: object) {
   selectedUser.value = user;
@@ -548,7 +521,7 @@ function unchooseUser() {
 
 onMounted(() => {
   checkLogIn();
-})
+});
 </script>
 
 <template>
@@ -579,34 +552,46 @@ onMounted(() => {
     </div>
   </div>
 
-  <div class="w-full flex justify-center bg-gray-300">
+  <div class="w-full flex justify-center bg-gray-200">
     <div class="flex flex-col items-start w-10/12 gap-4 p-2" v-if="loggedIn">
-      <div class="w-full flex justify-between items-center">
-        <h1 class="text-xl font-bold">Admin Panel</h1>
-        <div class="flex gap-2 items-center">
-          <p>Logged In As:</p>
-          <button
-            class="bg-neutral-100 p-2 border rounded font-bold hover:scale-105 transition-all cursor-pointer"
-          >
-            {{ currentChurch }} <ion-icon name="caret-down-outline"></ion-icon>
-          </button>
+      <div class="w-full rounded-lg p-4">
+        <div class="py-2 w-full flex justify-between items-center">
+          <h1 class="text-xl font-bold">Admin Panel</h1>
+        </div>
+        <div class="w-full flex gap-2 mb-4">
+          <TextInput
+            v-model="searchText"
+            :extraCss="'border-neutral-500 bg-neutral-100'"
+            :title="'Search by Name'"
+            :placeholder="'Search...'"
+          ></TextInput>
+          <DropdownInput
+            v-model="roleFilter"
+            :extraCss="'border-neutral-500 bg-neutral-100'"
+            :title="'Choose Role'"
+            :placeholder="'All'"
+            :options="['All', 'Leader', 'Student']"
+          ></DropdownInput>
+          <DropdownInput
+            v-model="churchFilter"
+            :extraCss="'border-neutral-500 bg-neutral-100'"
+            :title="'Choose Church'"
+            :placeholder="'Choose Church'"
+            :options="churches"
+            :disabled="currentChurch != 'YFC'"
+          ></DropdownInput>
         </div>
       </div>
-      <div class="w-full flex gap-2 mb-4">
-        <TextInput v-model="searchText" :extraCss="'border-neutral-500 bg-neutral-100'" :title="'Search by Name'" :placeholder="'Search...'"></TextInput>
-        <DropdownInput :extraCss="'border-neutral-500 bg-neutral-100'" :title="'Choose Role'" :placeholder="'Choose Role'" :options="['leader', 'student']"></DropdownInput>
-        <DropdownInput :extraCss="'border-neutral-500 bg-neutral-100'" :title="'Choose Church'" :placeholder="'Choose Church'" :options="churches" :disabled="currentChurch != 'YFC'"></DropdownInput>
-      </div>
       <!-- <div class="w-full h-[1px] bg-black"></div> -->
-      <div class="w-full grid lg:grid-cols-2 grid-cols-1 gap-4 h-full">
+      <div class="w-full grid lg:grid-cols-2 grid-cols-1 gap-4 h-full p-4">
         <div v-for="record in filteredRows">
           <div
-            class="bg-neutral-100 border border-neutral-500 shadow-2xl rounded flex flex-col items-start gap-2 p-2"
+            class="bg-gray-100 border border-neutral-500 shadow-lg rounded flex flex-col items-start gap-2 p-2 hover:scale-[101%] transition-all"
           >
             <div class="flex lg:flex-row flex-col gap-2 w-full">
               <div class="text-left flex flex-col items-start grow">
                 <p class="font-bold">{{ record.full_name }}</p>
-                <p>{{ record.church_name }} ({{ record.youth_leader }})</p>
+                <p>{{ record.church_name }}</p>
               </div>
               <p
                 class="rounded p-2 h-fit pt-3 font-semibold text-white bg-red-900"
@@ -630,34 +615,38 @@ onMounted(() => {
               <div class="w-full text-left">
                 <p>
                   Phone Number:
-                  <a :href="`tel${record.phone_number}`" class="underline font-semibold">{{ record.phone_number }} </a>
+                  <a
+                    :href="`tel${record.phone_number}`"
+                    class="underline font-semibold text-blue-700"
+                    >{{ record.phone_number }}
+                    <ion-icon name="call"></ion-icon>
+                  </a>
                 </p>
                 <p>
                   Email Address:
-                  <a :href="`mailto:${record.email}`" class="underline font-semibold">{{ record.email }} </a>
+                  <a
+                    :href="`mailto:${record.email}`"
+                    class="underline font-semibold text-blue-700"
+                    >{{ record.email }}
+                    <ion-icon name="mail"></ion-icon>
+                  </a>
                 </p>
                 <p>
                   Parent Email Address:
-                  <span class="font-semibold">{{ record.parent_email ?? '---' }} </span>
+                  <span class="font-semibold"
+                    >{{ record.parent_email ?? "---" }}
+                  </span>
                 </p>
                 <p>
                   Medication Information:
                   <span class="font-semibold"
-                    >{{
-                      record.medication
-                        ? record.medication_info
-                        : "None"
-                    }}
+                    >{{ record.medication ? record.medication_info : "None" }}
                   </span>
                 </p>
                 <p>
                   Allergy Information:
                   <span class="font-semibold"
-                    >{{
-                      record.allergies
-                        ? record.allergies_info
-                        : "None"
-                    }}
+                    >{{ record.allergies ? record.allergies_info : "None" }}
                   </span>
                 </p>
                 <p>
@@ -679,9 +668,9 @@ onMounted(() => {
                   </span>
                 </p>
               </div>
+              <!-- @click="chooseUser(record)" -->
               <button
-                @click="chooseUser(record)"
-                class="h-fit w-fit not-lg:w-full p-2 rounded border hover:scale-105 transition-all cursor-pointer hover:text-white hover:bg-blue-950 font-semibold"
+                class="h-fit w-fit not-lg:w-full p-2 rounded border hover:scale-105 transition-all cursor-not-allowed opacity-50 bg-neutral-600 text-white hover:bg-red-900 font-semibold"
               >
                 View Full Info
               </button>
@@ -695,22 +684,22 @@ onMounted(() => {
       class="w-full h-dvh absolute flex justify-end backdrop-blur-lg backdrop-brightness-75 transition-all overflow-hidden"
       :class="userSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'"
     >
-      <div class="rounded bg-white w-1/3 min-w-72 h-full p-4 flex flex-col transition-all"
-      :class="userSelected ? 'translate-x-0' : 'translate-x-full'"
+      <div
+        class="rounded bg-white w-1/3 min-w-72 h-full p-4 flex flex-col transition-all"
+        :class="userSelected ? 'translate-x-0' : 'translate-x-full'"
       >
         <div class="flex items-center gap-2">
           <button
             @click="unchooseUser"
-            class="px-2 pt-1 rounded border hover:scale-105 transition-all cursor-pointer"
+            class="pt-2 hover:scale-110 transition-all cursor-pointer"
           >
-            X
+            <ion-icon name="close"></ion-icon>
           </button>
           <p>User Details</p>
         </div>
       </div>
     </div>
   </div>
-
 </template>
 
 <style scoped lang="scss"></style>
