@@ -14,6 +14,7 @@ const registrationDay = new Date("2025-10-17T20:00:00Z");
 const timeLeft = registrationDay.valueOf() - today.valueOf();
 const registrationOpen = false;
 const activeImage = ref<number>(0);
+const showModal = ref<boolean>(true);
 
 // form fields
 const fullName = ref<string>();
@@ -450,6 +451,10 @@ function enableToaster(error: boolean, title: string, description: string) {
   }, 5000);
 }
 
+function closeModal() {
+  showModal.value = false;
+}
+
 onMounted(async () => {
   let data = await fetch("/api/public", {
     method: "GET",
@@ -495,6 +500,21 @@ onMounted(async () => {
     :description="toasterDescription"
   />
   <div
+  id="modal"
+  class="fixed h-dvh w-full backdrop-blur-md text-white justify-center items-center"
+  :class="showModal ? 'flex z-50' : 'hidden -z-10'"
+  >
+    <div
+    class="rounded-lg bg-background-layer min-w-70 max-w-1/2 h-fit p-8 flex flex-col justify-center items-center gap-4"
+    >
+      <h1 class="px-8 z-10 text-white font-bold text-4xl">Registrations are closed for this year!</h1>
+      <img :src="'/theme-logo.png'"></img>
+      <p class="z-10 text-white text-lg">Can't wait to see you at Big Weekend 2025 this year! If you've not registered yet, keep an eye open on this space in case any spots open up.</p>
+      <button @click="closeModal" class="cursor-pointer z-10 font-bold text-white text-lg pt-2 pb-1 px-4 border-2 rounded-lg border-white bg-primary hover:scale-105 transition-all">GOT IT</button>
+    </div>
+  </div>
+
+  <div
     id="home"
     class="flex flex-col h-dvh w-full justify-center items-center relative gap-10"
   >
@@ -510,7 +530,7 @@ onMounted(async () => {
       href="#signup"
       class="z-10 font-bold text-white text-lg pt-2 pb-1 px-4 border-2 rounded-lg border-white bg-primary hover:scale-105 transition-all"
     >
-      REGISTER
+      COUNTDOWN TO BW25
     </a>
     <a href="#about" class="absolute z-10 bottom-16 w-10"
       ><img
