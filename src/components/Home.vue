@@ -10,9 +10,9 @@ import VueCountdown from "@chenfengyuan/vue-countdown";
 import Toaster from "./Toaster.vue";
 
 const today = new Date();
-const registrationDay = new Date("2025-08-07T20:00:00Z");
+const registrationDay = new Date("2025-10-17T20:00:00Z");
 const timeLeft = registrationDay.valueOf() - today.valueOf();
-const registrationOpen = timeLeft > 0 ? false : true;
+const registrationOpen = false;
 const activeImage = ref<number>(0);
 
 // form fields
@@ -691,7 +691,7 @@ onMounted(async () => {
   >
     <div class="flex flex-col gap-2">
       <h1 class="text-5xl font-bold text-primary w-full text-center">
-        SIGN UP
+        DAYS TO BIG WEEKEND 25
       </h1>
       <p v-if="registrationOpen">
         Price per head:
@@ -714,7 +714,6 @@ onMounted(async () => {
         </strong>
         per participant | Registration closes October 3 2025
       </p>
-      <p v-else>Registration opens August 8 2025</p>
     </div>
 
     <form
