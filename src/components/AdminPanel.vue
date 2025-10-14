@@ -679,21 +679,24 @@ onMounted(() => {
                 LEADER
               </div>
             </div>
-            <div class="w-full flex flex-wrap gap-4 not-sm:justify-center">
-              <a
+            <div class="w-full flex flex-wrap justify-between items-center">
+              <div class="flex gap-4">
+                <a
                 :href="`tel:${record.phone_number}`"
                 class="underline font-semibold text-blue-700"
-              >
+                >
                 <ion-icon name="call"></ion-icon>
                 Call
               </a>
               <a
-                :href="`mailto:${record.email}`"
-                class="underline font-semibold text-blue-700 wrap-anywhere"
+              :href="`mailto:${record.email}`"
+              class="underline font-semibold text-blue-700 wrap-anywhere"
               >
-                <ion-icon name="mail"></ion-icon>
-                Email
-              </a>
+              <ion-icon name="mail"></ion-icon>
+              Email
+            </a>
+          </div>
+              <p class="capitalize p-2 rounded text-white font-semibold" :class="record.checked_in ? 'bg-green-600' : 'bg-red-600'">{{ record.checked_in ? 'Checked In' : 'Not Checked In' }}</p>
             </div>
             <div class="w-full h-1"></div>
             <div
