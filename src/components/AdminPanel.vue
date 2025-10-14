@@ -365,8 +365,9 @@ const currentChurch = ref<string>("YFC");
 const roleFilter = ref<"All" | "Leader" | "Student">("All");
 const churchFilter = ref<string>("All");
 
+const showFilters = ref<boolean>(true);
 const userSelected = ref<boolean>(false);
-const selectedUser = ref<{}>();
+const selectedUser = ref<typeof rows.value[0]>();
 const loggedIn = ref<boolean>(true);
 const inputUsername = ref<string>();
 const inputPassword = ref<string>();
@@ -405,6 +406,7 @@ const rows = ref([
     online_payment: "",
     acknowledgement: "",
     paid: false,
+    checked_in: false,
   },
 ]);
 
@@ -413,27 +415,25 @@ const church_names = ref<any>();
 const churches = ref<any>();
 
 const filteredRows = computed(() => {
-  return rows.value
-    .filter((row) => {
-      if (
-        churchFilter.value.toLowerCase() != "all" &&
-        churchFilter.value.toLowerCase() != row.church_name.toLowerCase()
-      )
-        return false;
-      if (
-        roleFilter.value.toLowerCase() != "all" &&
-        (roleFilter.value.toLowerCase() == "leader"
-          ? row.role != "leader"
-          : row.role == "leader")
-      )
-        return false;
-      return row.full_name
-        .toLowerCase()
-        .includes(searchText.value.toLowerCase());
-    })
-    .sort((a, b) => {
-      return a.full_name.localeCompare(b.full_name);
-    });
+  if (searchText.value.length == 0) return rows.value;
+
+  return rows.value.filter((row) => {
+    if (
+      churchFilter.value.toLowerCase() != "all" &&
+      churchFilter.value.toLowerCase() != row.church_name.toLowerCase()
+    )
+      return false;
+    if (
+      roleFilter.value.toLowerCase() != "all" &&
+      (roleFilter.value.toLowerCase() == "leader"
+        ? row.role != "leader"
+        : row.role == "leader")
+    )
+      return false;
+    return row.full_name
+      .toLowerCase()
+      .startsWith(searchText.value.toLowerCase());
+  });
 });
 
 async function checkLogIn() {
@@ -485,15 +485,17 @@ async function checkLogIn() {
             nonPaying: row["online_payment"] ? 0 : 1,
           };
       }
-      if (counts["All"])
-        counts["All"] = {
-          signups: counts["All"]["signups"] + 1,
-          paidSignups: counts["All"]["paidSignups"] + (row["paid"] ? 1 : 0),
+      if (counts["(All Churches)"])
+        counts["(All Churches)"] = {
+          signups: counts["(All Churches)"]["signups"] + 1,
+          paidSignups:
+            counts["(All Churches)"]["paidSignups"] + (row["paid"] ? 1 : 0),
           nonPaying:
-            counts["All"]["nonPaying"] + (!row["online_payment"] ? 1 : 0),
+            counts["(All Churches)"]["nonPaying"] +
+            (!row["online_payment"] ? 1 : 0),
         };
       else
-        counts["All"] = {
+        counts["(All Churches)"] = {
           signups: 1,
           paidSignups: row["paid"] ? 1 : 0,
           nonPaying: !row["online_payment"] ? 1 : 0,
@@ -506,17 +508,49 @@ async function checkLogIn() {
     }));
 
     churches.value = church_names.value.map((item: any) => item.name).sort();
+    const index = churches.value.indexOf("(All Churches)");
+    if (index > -1) {
+      const [allEl] = churches.value.splice(index, 1);
+      churches.value.unshift(allEl);
+    }
+
+    rows.value.sort((a, b) => {
+      return a.full_name.localeCompare(b.full_name);
+    });
   }
 }
 
-function chooseUser(user: object) {
+function chooseUser(user: typeof selectedUser.value) {
   selectedUser.value = user;
-  console.log(user);
   userSelected.value = true;
+  
+  const el = document.getElementById('namelist');
+  el?.classList.add('overflow-hidden', 'fixed');
 }
 
 function unchooseUser() {
   userSelected.value = false;
+  
+  const el = document.getElementById('namelist');
+  el?.classList.remove('overflow-hidden', 'fixed');
+}
+
+function hoverRecord(id: any) {
+  const el = document.getElementById(id);
+
+  if (el) {
+    el.classList.remove("bg-white");
+    el.classList.add("bg-red-800", "text-white");
+  }
+}
+
+function unhoverRecord(id: any) {
+  const el = document.getElementById(id);
+
+  if (el) {
+    el.classList.add("bg-white");
+    el.classList.remove("bg-red-800", "text-white");
+  }
 }
 
 onMounted(() => {
@@ -552,29 +586,49 @@ onMounted(() => {
     </div>
   </div>
 
-  <div class="w-full flex justify-center bg-gray-200">
-    <div class="flex flex-col items-start w-10/12 gap-4 p-2" v-if="loggedIn">
-      <div class="w-full rounded-lg p-4">
+  <div
+  id="namelist"
+  class="min-h-dvh w-full flex justify-center bg-neutral-200">
+    <div
+      class="flex flex-col items-start w-full md:w-10/12 lg:w-8/12 gap-4 p-2"
+      v-if="loggedIn"
+    >
+      <div class="w-full rounded-lg p-4 bg-neutral-600 text-white">
         <div class="py-2 w-full flex justify-between items-center">
           <h1 class="text-xl font-bold">Admin Panel</h1>
+          <ion-icon
+            class="cursor-pointer h-4 w-4 p-1 hover:bg-primary rounded border border-white"
+            @click="showFilters = !showFilters"
+            v-if="showFilters"
+            name="caret-up"
+          ></ion-icon>
+          <ion-icon
+            class="cursor-pointer h-4 w-4 p-1 hover:bg-primary rounded border border-white"
+            @click="showFilters = !showFilters"
+            v-if="!showFilters"
+            name="caret-down"
+          ></ion-icon>
         </div>
-        <div class="w-full flex gap-2 mb-4">
+        <div
+          v-if="showFilters"
+          class="w-full flex flex-col sm:flex-row gap-2 mb-4"
+        >
           <TextInput
             v-model="searchText"
-            :extraCss="'border-neutral-500 bg-neutral-100'"
+            :extraCss="'border-primary bg-white text-black'"
             :title="'Search by Name'"
             :placeholder="'Search...'"
           ></TextInput>
           <DropdownInput
             v-model="roleFilter"
-            :extraCss="'border-neutral-500 bg-neutral-100'"
+            :extraCss="'border-primary bg-white text-black'"
             :title="'Choose Role'"
             :placeholder="'All'"
             :options="['All', 'Leader', 'Student']"
           ></DropdownInput>
           <DropdownInput
             v-model="churchFilter"
-            :extraCss="'border-neutral-500 bg-neutral-100'"
+            :extraCss="'border-primary bg-white text-black'"
             :title="'Choose Church'"
             :placeholder="'Choose Church'"
             :options="churches"
@@ -586,73 +640,80 @@ onMounted(() => {
       <div class="w-full grid lg:grid-cols-2 grid-cols-1 gap-4 h-full p-4">
         <div v-for="record in filteredRows">
           <div
-            class="bg-gray-100 border border-neutral-500 shadow-lg rounded flex flex-col items-start gap-2 p-2 hover:scale-[101%] transition-all"
+            class="bg-white border-2 hover:shadow-xl border-primary hover:border-secondary rounded flex flex-col items-start gap-2 p-2 cursor-pointer transition-all"
+            @mouseenter="hoverRecord(record.id)"
+            @mouseleave="unhoverRecord(record.id)"
+            @click="chooseUser(record)"
           >
-            <div class="flex lg:flex-row flex-col gap-2 w-full">
-              <div class="text-left flex flex-col items-start grow">
+            <div
+              class="flex lg:flex-row flex-col gap-2 w-full h-full items-stretch"
+            >
+              <div
+                class="text-left flex flex-col items-start justify-center grow"
+              >
                 <p class="font-bold">{{ record.full_name }}</p>
-                <p>{{ record.church_name }}</p>
               </div>
               <p
-                class="rounded p-2 h-fit pt-3 font-semibold text-white bg-red-900"
-                v-if="record.role === 'leader'"
+                class="rounded p-1 pt-2 text-black border-black bg-white border"
               >
-                LEADER
+                <img
+                  class="h-8 w-8 inline-block mr-2"
+                  :src="'/swimming.png'"
+                /><span class="capitalize">{{ record.swimming }}</span>
               </p>
-              <p
-                class="rounded p-2 h-fit pt-3 font-semibold text-white"
+              <div
+                class="rounded p-1 pt-2 font-semibold text-white flex items-center justify-center"
                 :class="
                   record.gender === 'female' ? 'bg-pink-700' : 'bg-blue-700'
                 "
               >
-                {{ record.age }} {{ record.gender.charAt(0).toUpperCase() }}
-              </p>
+                <span
+                  >{{ record.age }}
+                  {{ record.gender.charAt(0).toUpperCase() }}</span
+                >
+              </div>
+              <div
+                class="rounded p-1 pt-2 font-semibold text-white bg-red-900 flex items-center justify-center"
+                v-if="record.role === 'leader'"
+              >
+                LEADER
+              </div>
             </div>
-            <div class="w-full bg-black h-[1px]"></div>
+            <div class="w-full flex flex-wrap gap-4 not-sm:justify-center">
+              <a
+                :href="`tel:${record.phone_number}`"
+                class="underline font-semibold text-blue-700"
+              >
+                <ion-icon name="call"></ion-icon>
+                Call
+              </a>
+              <a
+                :href="`mailto:${record.email}`"
+                class="underline font-semibold text-blue-700 wrap-anywhere"
+              >
+                <ion-icon name="mail"></ion-icon>
+                Email
+              </a>
+            </div>
+            <div class="w-full h-1"></div>
             <div
               class="w-full flex lg:flex-row flex-col justify-between items-end gap-2"
             >
               <div class="w-full text-left">
                 <p>
-                  Phone Number:
-                  <a
-                    :href="`tel${record.phone_number}`"
-                    class="underline font-semibold text-blue-700"
-                    >{{ record.phone_number }}
-                    <ion-icon name="call"></ion-icon>
-                  </a>
+                  Church:
+                  <span class="font-semibold">{{ record.church_name }} </span>
                 </p>
                 <p>
-                  Email Address:
-                  <a
-                    :href="`mailto:${record.email}`"
-                    class="underline font-semibold text-blue-700"
-                    >{{ record.email }}
-                    <ion-icon name="mail"></ion-icon>
-                  </a>
-                </p>
-                <p>
-                  Parent Email Address:
-                  <span class="font-semibold"
-                    >{{ record.parent_email ?? "---" }}
-                  </span>
-                </p>
-                <p>
-                  Medication Information:
+                  Medication:
                   <span class="font-semibold"
                     >{{ record.medication ? record.medication_info : "None" }}
                   </span>
                 </p>
                 <p>
-                  Allergy Information:
+                  Allergies:
                   <span class="font-semibold"
                     >{{ record.allergies ? record.allergies_info : "None" }}
-                  </span>
-                </p>
-                <p>
-                  Swimming:
-                  <span class="font-semibold"
-                    >{{ record.swimming === "Yes" ? "Allowed" : "Not Allowed" }}
                   </span>
                 </p>
                 <p>
@@ -663,17 +724,20 @@ onMounted(() => {
                 </p>
                 <p>
                   Emergency Number:
-                  <span class="font-semibold"
-                    >{{ record.emergency_number }}
-                  </span>
+                  <a
+                    :href="`tel:${record.emergency_number}`"
+                    class="underline font-semibold text-blue-700"
+                  >
+                    <ion-icon name="call"></ion-icon>
+                    Call
+                  </a>
                 </p>
               </div>
-              <!-- @click="chooseUser(record)" -->
-              <button
-                class="h-fit w-fit not-lg:w-full p-2 rounded border hover:scale-105 transition-all cursor-not-allowed opacity-50 bg-neutral-600 text-white hover:bg-red-900 font-semibold"
-              >
-                View Full Info
-              </button>
+              <ion-icon
+                :id="record.id"
+                class="h-6 w-6 py-1 lg:px-1 not-lg:w-full box-border text-black rounded border border-black transition-all"
+                name="caret-forward-outline"
+              ></ion-icon>
             </div>
           </div>
         </div>
@@ -681,12 +745,16 @@ onMounted(() => {
     </div>
 
     <div
-      class="w-full h-dvh absolute flex justify-end backdrop-blur-lg backdrop-brightness-75 transition-all overflow-hidden"
+      class="w-full fixed h-dvh flex justify-center sm:justify-end backdrop-blur-lg backdrop-brightness-75 transition-all overflow-hidden"
       :class="userSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'"
     >
       <div
-        class="rounded bg-white w-1/3 min-w-72 h-full p-4 flex flex-col transition-all"
-        :class="userSelected ? 'translate-x-0' : 'translate-x-full'"
+        class="absolute not-sm:top-10 not-sm:pb-14 z-50 rounded bg-white sm:w-1/3 min-w-72 h-full p-4 flex flex-col gap-2 transition-all"
+        :class="
+          userSelected
+            ? 'sm:translate-x-0 not-sm:translate-y-0'
+            : 'sm:translate-x-full not-sm:translate-y-full'
+        "
       >
         <div class="flex items-center gap-2">
           <button
@@ -696,6 +764,180 @@ onMounted(() => {
             <ion-icon name="close"></ion-icon>
           </button>
           <p>User Details</p>
+        </div>
+        <div class="w-full flex flex-col gap-2 overflow-y-scroll">
+          <p class="text-2xl m-0 text-left font-semibold">
+            {{ selectedUser?.full_name }}
+          </p>
+          <p class="text-left">{{ selectedUser?.church_name }}</p>
+          <p class="rounded p-4 pt-5 text-black border-black bg-white border">
+            <img
+              class="h-8 w-8 inline-block mr-2"
+              :src="'/swimming.png'"
+            /><span class="capitalize">{{ selectedUser?.swimming }}</span>
+          </p>
+          <div
+            class="rounded p-4 pt-5 font-semibold text-white flex items-center justify-center"
+            :class="
+              selectedUser?.gender === 'female' ? 'bg-pink-700' : 'bg-blue-700'
+            "
+          >
+            <span
+              >{{ selectedUser?.age }}
+              {{ selectedUser?.gender.charAt(0).toUpperCase() }}</span
+            >
+          </div>
+          <div
+            class="capitalize rounded p-4 pt-5 font-semibold text-white flex items-center justify-center"
+            :class="
+              selectedUser?.role === 'leader' ? 'bg-secondary' : 'bg-primary'
+            "
+          >
+            {{ selectedUser?.role }}
+          </div>
+          <div
+            class="capitalize rounded p-4 pt-5 font-semibold text-white bg-black flex items-center justify-center"
+          >
+            GROUP
+          </div>
+          <div class="w-full h-0.5 my-4 bg-black rounded"></div>
+          <p class="text-left text-xl font-semibold">Personal Information</p>
+          <p class="text-left">
+            DOB:
+            <span class="font-semibold">{{ selectedUser?.date_of_birth }}</span>
+          </p>
+          <p class="text-left">
+            Nationality:
+            <span class="font-semibold capitalize">{{
+              selectedUser?.nationality
+            }}</span>
+          </p>
+          <p class="text-left">
+            ID Number:
+            <span class="font-semibold">{{ selectedUser?.id_number }}</span>
+          </p>
+          <p class="text-left">
+            Email:
+            <a
+              :href="`mailto:${selectedUser?.email}`"
+              class="font-semibold underline text-blue-600"
+              >{{ selectedUser?.email }}</a
+            >
+          </p>
+          <p class="text-left">
+            Number:
+            <a
+              :href="`tel:${selectedUser?.phone_number}`"
+              class="font-semibold underline text-blue-600"
+              >{{ selectedUser?.phone_number }}</a
+            >
+          </p>
+          <p class="text-left">
+            Emergency Contact:
+            <span class="font-semibold">{{
+              selectedUser?.emergency_name
+            }}</span>
+          </p>
+          <p class="text-left">
+            Emergency Number:
+            <span class="font-semibold">{{
+              selectedUser?.emergency_number
+            }}</span>
+          </p>
+          <p class="text-left">
+            Parent Email:
+            <a
+              :href="`mailto:${selectedUser?.parent_email}`"
+              class="font-semibold underline text-blue-600"
+              >{{ selectedUser?.parent_email }}</a
+            >
+          </p>
+          <p class="text-left text-xl mt-4 font-semibold">Church Information</p>
+          <p class="text-left">
+            Youth Leader:
+            <span class="font-semibold">{{ selectedUser?.youth_leader }}</span>
+          </p>
+          <p class="text-left">
+            Youth Leader's Email:
+            <a
+              :href="`mailto:${selectedUser?.leader_email}`"
+              class="font-semibold underline text-blue-600"
+              >{{ selectedUser?.leader_email }}</a
+            >
+          </p>
+          <p class="text-left">
+            Youth Leader's Number:
+            <a
+              :href="`tel:${selectedUser?.youth_number}`"
+              class="font-semibold underline text-blue-600"
+              >{{ selectedUser?.youth_number }}</a
+            >
+          </p>
+          <p class="text-left text-xl mt-4 font-semibold">
+            Additional Information
+          </p>
+          <p class="text-left">
+            Shirt Size:
+            <span class="font-semibold">{{ selectedUser?.shirt_size }}</span>
+          </p>
+          <p class="text-left">
+            Swimming:
+            <span class="font-semibold">{{ selectedUser?.swimming }}</span>
+          </p>
+          <p class="text-left">
+            Allergies:
+            <span class="font-semibold">{{
+              selectedUser?.allergies_info
+            }}</span>
+          </p>
+          <p class="text-left">
+            Medication:
+            <span class="font-semibold">{{
+              selectedUser?.medication_info
+            }}</span>
+          </p>
+          <p class="text-left text-xl mt-4 font-semibold">Seniors Conference</p>
+          <p class="text-left">
+            Graduating:
+            <span class="font-semibold">{{ selectedUser?.graduating }}</span>
+          </p>
+          <p class="text-left">
+            Interest:
+            <span class="font-semibold">{{
+              selectedUser?.launch_conf ?? "No"
+            }}</span>
+          </p>
+          <p class="text-left text-xl mt-4 font-semibold">Merchandise</p>
+          <p class="text-left">
+            EYU Cap:
+            <span class="font-semibold">{{
+              selectedUser?.eyu_cap ?? "No"
+            }}</span>
+          </p>
+          <p class="text-left">
+            BW25 Sweatshirt:
+            <span class="font-semibold">{{
+              selectedUser?.bw_25_shirt ?? "No"
+            }}</span>
+          </p>
+          <p class="text-left">
+            BW25 Sweatshirt Size:
+            <span class="font-semibold">{{
+              selectedUser?.bw_25_shirt_size ?? "No"
+            }}</span>
+          </p>
+          <button
+            v-if="!selectedUser?.checked_in"
+            class="cursor-pointer transition-all rounded w-full mt-4 text-white font-semibold text-xl p-2 bg-primary hover:bg-secondary"
+          >
+            Mark As Checked In
+          </button>
+          <p
+            v-else
+            class="rounded w-full mt-4 text-white font-semibold text-xl p-2 bg-secondary opacity-50"
+          >
+            Checked In
+          </p>
         </div>
       </div>
     </div>
