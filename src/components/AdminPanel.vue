@@ -95,12 +95,12 @@ async function adminLogin() {
     password: inputPassword.value,
   });
 
-  if (error) {
+  if (error || !data) {
     // try again
     loading.value = false;
     return;
   }
-  
+
   adminPrivileges.value = true;
   checkLogIn();
 }
