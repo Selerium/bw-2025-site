@@ -875,16 +875,15 @@ onMounted(() => {});
       class="w-dvw h-dvh fixed top-0 backdrop-blur-lg bg-background-layer flex justify-center items-center"
     >
       <div
-        class="flex flex-col items-start rounded p-4 bg-white border min-w-72 overflow-auto max-w-1/2"
+        class="flex flex-col items-start rounded p-4 bg-white border min-w-72 max-h-3/4 overflow-auto max-w-1/2"
       >
         <p class="text-2xl font-semibold w-full">Help Guide</p>
-        <p class="w-full">
+        <p class="pb-4 w-full">
           Hopefully this isn't that hard to use, but here's some simple
           intructions in case (this can be opened again using the
           <ion-icon name="help" class="h-4 w-4 border rounded-full"></ion-icon>
           button):
         </p>
-        <div class="h-6"></div>
         <p class="text-left">
           - <span class="font-semibold">Namelist</span> shows you important info
           of every participant you may need to contact a student or a fellow
@@ -907,12 +906,11 @@ onMounted(() => {});
           - If a student is in trouble, make sure to check for their
           <span class="font-semibold">medication and allergy</span> information.
         </p>
-        <p class="text-left">
+        <p class="pb-4 text-left">
           - Clicking on a student opens a bigger view for every necessary
           detail.
         </p>
-        <div class="h-6"></div>
-        <p class="w-full">
+        <p class="pb-4 w-full">
           Be respectful and responsible with this information. You are a leader
           at Big Weekend and we're all here to make sure the leaders of tomorrow
           have a great time, and that only happens with your support and help
