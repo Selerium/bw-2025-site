@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -30,7 +29,7 @@ const emit = defineEmits(["changeSection", "closeSidebar"]);
 <template>
   <div
     class="lg:w-36 fixed flex flex-col justify-center items-center left-0 h-full p-2 w-full not-lg:bg-white z-50 transition-all"
-    :class="showSidebar ? '' : 'not-lg:-translate-x-full'"
+    :class="props.showSidebar ? '' : 'not-lg:-translate-x-full'"
   >
     <div
       class="w-36 flex flex-col justify-between p-2 white h-80 lg:h-full rounded"
